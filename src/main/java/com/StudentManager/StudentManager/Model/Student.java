@@ -1,6 +1,6 @@
 package com.StudentManager.StudentManager.Model;
 
-import com.StudentManager.StudentManager.Model.Enum.StudentStatus;
+import com.StudentManager.StudentManager.Model.Enum.Status;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -45,7 +45,7 @@ public class Student {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private StudentStatus status;
+    private Status status;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)

@@ -1,6 +1,6 @@
 package com.StudentManager.StudentManager.DTO;
 
-import com.StudentManager.StudentManager.Model.Enum.StudentStatus;
+import com.StudentManager.StudentManager.Model.Enum.Status;
 
 import java.time.LocalDate;
 
@@ -10,5 +10,5 @@ public record StudentRequest(String name,
                              LocalDate birthDate,
                              String email,
                              Long phoneNumber,
-                             StudentStatus status) {
+                             Status status) {
 }

@@ -3,7 +3,7 @@ package com.StudentManager.StudentManager.Service;
 import com.StudentManager.StudentManager.DTO.StudentRequest;
 import com.StudentManager.StudentManager.DTO.StudentResponse;
 import com.StudentManager.StudentManager.Mapper.StudentMapper;
-import com.StudentManager.StudentManager.Model.Enum.StudentStatus;
+import com.StudentManager.StudentManager.Model.Enum.Status;
 import com.StudentManager.StudentManager.Model.Student;
 import com.StudentManager.StudentManager.Repository.StudentRepository;
 import org.springframework.stereotype.Service;
@@ -39,7 +39,7 @@ public class StudentService {
     public StudentResponse createStudent(StudentRequest student) {
         Student newStudent = StudentMapper.toStudent(student);
 
-        newStudent.setStatus(StudentStatus.ACTIVE);
+        newStudent.setStatus(Status.ACTIVE);
         studentRepository.save(newStudent);
 
         return StudentMapper.toStudentResponse(newStudent);
@@ -63,6 +63,6 @@ public class StudentService {
 
     public void deleteStudentById(UUID id) {
         Student student = studentRepository.findById(id).orElseThrow(() -> new RuntimeException("Student not found"));
-        student.setStatus(StudentStatus.INACTIVE);
+        student.setStatus(Status.INACTIVE);
     }
 }

@@ -1,6 +1,6 @@
 package com.StudentManager.StudentManager.DTO;
 
-import com.StudentManager.StudentManager.Model.Enum.StudentStatus;
+import com.StudentManager.StudentManager.Model.Enum.Status;
 import lombok.Builder;
 
 import java.time.LocalDate;
@@ -15,7 +15,7 @@ public record StudentResponse(UUID id,
                               LocalDate birthDate,
                               String email,
                               Long phoneNumber,
-                              StudentStatus status,
+                              Status status,
                               OffsetDateTime createdAt,
                               OffsetDateTime updatedAt) {
 }

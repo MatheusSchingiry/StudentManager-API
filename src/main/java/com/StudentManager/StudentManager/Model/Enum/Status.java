@@ -1,6 +1,6 @@
 package com.StudentManager.StudentManager.Model.Enum;
 
-public enum StudentStatus {
+public enum Status {
     ACTIVE,
     INACTIVE
 }
