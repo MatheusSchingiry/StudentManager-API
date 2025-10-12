@@ -16,39 +16,42 @@ import java.util.stream.Collectors;
 public class StudentService {
 
     private final StudentRepository studentRepository;
+    private final StudentMapper studentMapper;
 
-    public StudentService(StudentRepository studentRepository) {
+    public StudentService(StudentRepository studentRepository, StudentMapper studentMapper) {
         this.studentRepository = studentRepository;
+        this.studentMapper = studentMapper;
     }
 
     public List<StudentResponse> getAllStudents() {
         return studentRepository.findAll()
                 .stream()
-                .map(StudentMapper::toStudentResponse)
+                .map(studentMapper::toStudentResponse)
                 .collect(Collectors.toList());
     }
 
     public StudentResponse getStudentByEmail(String email) {
-        return studentRepository.findByEmail(email).map(StudentMapper::toStudentResponse).orElseThrow(() -> new RuntimeException("Student not found"));
+        return studentRepository.findByEmail(email).map(studentMapper::toStudentResponse).orElseThrow(() -> new RuntimeException("Student not found"));
     }
 
     public StudentResponse getStudentByRegisterNumber(Long registerNumber) {
-        return studentRepository.findByRegisterNumber(registerNumber).map(StudentMapper::toStudentResponse).orElseThrow(() -> new RuntimeException("Student not found"));
+        return studentRepository.findByRegisterNumber(registerNumber).map(studentMapper::toStudentResponse).orElseThrow(() -> new RuntimeException("Student not found"));
     }
 
     public StudentResponse createStudent(StudentRequest student) {
-        Student newStudent = StudentMapper.toStudent(student);
+        Student newStudent = studentMapper.toStudent(student);
 
         newStudent.setStatus(Status.ACTIVE);
         studentRepository.save(newStudent);
 
-        return StudentMapper.toStudentResponse(newStudent);
+        return studentMapper.toStudentResponse(newStudent);
     }
 
     public StudentResponse editStudentById(UUID id, StudentRequest student) {
         Student existingStudent = studentRepository.findById(id).orElseThrow(() -> new RuntimeException("Student not found"));
-        Student correctedStudent = StudentMapper.toStudent(student);
+        Student correctedStudent = studentMapper.toStudent(student);
 
+        correctedStudent.setId(id);
         if(correctedStudent.getName() == null){ correctedStudent.setName(existingStudent.getName()); }
         if(correctedStudent.getRegisterNumber() == null){ correctedStudent.setRegisterNumber(existingStudent.getRegisterNumber()); }
         if(correctedStudent.getAddress() == null){ correctedStudent.setAddress(existingStudent.getAddress()); }
@@ -58,11 +61,12 @@ public class StudentService {
         if(correctedStudent.getStatus() == null){ correctedStudent.setStatus(existingStudent.getStatus()); }
 
         studentRepository.save(correctedStudent);
-        return StudentMapper.toStudentResponse(correctedStudent);
+        return studentMapper.toStudentResponse(correctedStudent);
     }
 
     public void deleteStudentById(UUID id) {
         Student student = studentRepository.findById(id).orElseThrow(() -> new RuntimeException("Student not found"));
         student.setStatus(Status.INACTIVE);
+        studentRepository.save(student);
     }
 }

@@ -4,6 +4,7 @@ import com.StudentManager.StudentManager.Model.Enum.Status;
 import lombok.Builder;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
@@ -16,6 +17,6 @@ public record StudentResponse(UUID id,
                               String email,
                               Long phoneNumber,
                               Status status,
-                              OffsetDateTime createdAt,
-                              OffsetDateTime updatedAt) {
+                              LocalDateTime createdAt,
+                              LocalDateTime updatedAt) {
 }

@@ -3,12 +3,14 @@ package com.StudentManager.StudentManager.Mapper;
 import com.StudentManager.StudentManager.DTO.StudentRequest;
 import com.StudentManager.StudentManager.DTO.StudentResponse;
 import com.StudentManager.StudentManager.Model.Student;
-import lombok.experimental.UtilityClass;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
-@UtilityClass
+@Component
+@RequiredArgsConstructor
 public class StudentMapper {
 
-    public static Student toStudent(StudentRequest studentRequest) {
+    public Student toStudent(StudentRequest studentRequest) {
         return Student
                 .builder()
                 .name(studentRequest.name())
@@ -21,7 +23,7 @@ public class StudentMapper {
                 .build();
     }
 
-    public static StudentResponse toStudentResponse(Student student) {
+    public StudentResponse toStudentResponse(Student student) {
         return StudentResponse
                 .builder()
                 .id(student.getId())

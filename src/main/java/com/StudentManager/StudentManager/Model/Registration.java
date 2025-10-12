@@ -1,8 +1,8 @@
 package com.StudentManager.StudentManager.Model;
 
 import com.StudentManager.StudentManager.Model.Enum.Status;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,7 +15,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
-import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -23,39 +22,28 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "tb_students")
+@Table(name = "tb_registrations")
 @EntityListeners(AuditingEntityListener.class)
-public class Student {
+public class Registration {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false)
-    private String name;
-
-    @Column(nullable = false)
-    private Long registerNumber;
-
-    @Column(nullable = false)
-    private String address;
-
-    @Column(nullable = false)
-    private LocalDate birthDate;
-
-    @Column(nullable = false)
-    private String email;
-
-    @Column(nullable = true)
-    private Long phoneNumber;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "student_id", nullable = false)
+    @JsonIgnore
+    private Student student;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Status status;
 
-    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
-    private List<Registration> registrations;
+    @Column(nullable = false)
+    private LocalDate registrationDate;
+
+    @Column(nullable = false)
+    private Integer semester;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
