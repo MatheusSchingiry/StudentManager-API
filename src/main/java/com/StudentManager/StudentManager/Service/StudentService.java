@@ -63,6 +63,15 @@ public class StudentService {
 
     public void deleteStudentById(UUID id) {
         Student student = studentRepository.findById(id).orElseThrow(() -> new RuntimeException("Student not found"));
+
+        boolean hasActiveRegistrations = student.getRegistrations()
+                .stream()
+                .anyMatch(registration -> registration.getStatus() == Status.ACTIVE);
+
+        if (hasActiveRegistrations) {
+            throw new RuntimeException("Cannot delete student with active registrations");
+        }
+
         student.setStatus(Status.INACTIVE);
         studentRepository.save(student);
     }
