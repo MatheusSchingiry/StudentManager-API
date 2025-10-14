@@ -2,7 +2,6 @@ package com.StudentManager.StudentManager.Controller;
 
 import com.StudentManager.StudentManager.DTO.RegistrationRequest;
 import com.StudentManager.StudentManager.DTO.RegistrationResponse;
-import com.StudentManager.StudentManager.Model.Registration;
 import com.StudentManager.StudentManager.Service.RegistrationService;
 import org.springframework.web.bind.annotation.*;
 
