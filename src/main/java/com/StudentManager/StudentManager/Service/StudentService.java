@@ -49,19 +49,16 @@ public class StudentService {
 
     public StudentResponse editStudentById(UUID id, StudentRequest student) {
         Student existingStudent = studentRepository.findById(id).orElseThrow(() -> new RuntimeException("Student not found"));
-        Student correctedStudent = studentMapper.toStudent(student);
 
-        correctedStudent.setId(id);
-        if(correctedStudent.getName() == null){ correctedStudent.setName(existingStudent.getName()); }
-        if(correctedStudent.getRegisterNumber() == null){ correctedStudent.setRegisterNumber(existingStudent.getRegisterNumber()); }
-        if(correctedStudent.getAddress() == null){ correctedStudent.setAddress(existingStudent.getAddress()); }
-        if(correctedStudent.getBirthDate() == null){ correctedStudent.setBirthDate(existingStudent.getBirthDate()); }
-        if(correctedStudent.getEmail() == null){ correctedStudent.setEmail(existingStudent.getEmail()); }
-        if(correctedStudent.getPhoneNumber() == null){ correctedStudent.setPhoneNumber(existingStudent.getPhoneNumber()); }
-        if(correctedStudent.getStatus() == null){ correctedStudent.setStatus(existingStudent.getStatus()); }
+        if(student.name() != null){ existingStudent.setName(student.name()); }
+        if(student.address() != null){ existingStudent.setAddress(student.address()); }
+        if(student.birthDate() != null){ existingStudent.setBirthDate(student.birthDate()); }
+        if(student.email() != null){ existingStudent.setEmail(student.email()); }
+        if(student.phoneNumber() != null){ existingStudent.setPhoneNumber(student.phoneNumber()); }
+        if(student.status() != null){ existingStudent.setStatus(student.status()); }
 
-        studentRepository.save(correctedStudent);
-        return studentMapper.toStudentResponse(correctedStudent);
+        studentRepository.save(existingStudent);
+        return studentMapper.toStudentResponse(existingStudent);
     }
 
     public void deleteStudentById(UUID id) {

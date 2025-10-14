@@ -32,11 +32,9 @@ public class RegistrationService {
     }
 
     public RegistrationResponse getRegistrationByStudentId(UUID studentId) {
-        return registrationRepository.findAll().stream()
-                .filter(registration -> registration.getStudent().getId().equals(studentId))
-                .findFirst()
+        return registrationRepository.findByStudentId(studentId)
                 .map(registrationMapper::toRegistrationResponse)
-                .orElseThrow(() -> new RuntimeException("Registration not found for student id: " + studentId));
+                .orElseThrow(() -> new RuntimeException("Registration not found"));
     }
 
     public RegistrationResponse createRegistration(RegistrationRequest registration) {
@@ -49,16 +47,12 @@ public class RegistrationService {
         Registration existingRegistration = registrationRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Registration not found"));
 
-        Registration updatedRegistration = registrationMapper.toRegistration(registration);
+        if(registration.status() != null){ existingRegistration.setStatus(registration.status()); }
+        if(registration.registrationDate() != null){ existingRegistration.setRegistrationDate(registration.registrationDate()); }
+        if(registration.semester() != null){ existingRegistration.setSemester(registration.semester()); }
 
-        existingRegistration.setId(id);
-        if(updatedRegistration.getStudent() != null){ updatedRegistration.setStudent(existingRegistration.getStudent()); }
-        if(updatedRegistration.getStatus() != null){ updatedRegistration.setStatus(existingRegistration.getStatus()); }
-        if(updatedRegistration.getRegistrationDate() != null){ updatedRegistration.setRegistrationDate(existingRegistration.getRegistrationDate()); }
-        if(updatedRegistration.getSemester() != null){ updatedRegistration.setSemester(existingRegistration.getSemester()); }
-
-        registrationRepository.save(updatedRegistration);
-        return registrationMapper.toRegistrationResponse(updatedRegistration);
+        registrationRepository.save(existingRegistration);
+        return registrationMapper.toRegistrationResponse(existingRegistration);
     }
 
     public void deleteRegistrationById(UUID id) {
