@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 public class RegistrationMapper {
 
     private final StudentRepository studentRepository;
+    private final StudentMapper studentMapper;
 
     public Registration toRegistration(RegistrationRequest registrationRequest) {
         return Registration
@@ -27,7 +28,7 @@ public class RegistrationMapper {
         return RegistrationResponse
                 .builder()
                 .id(registration.getId())
-                .student(registration.getStudent())
+                .student(studentMapper.toStudentResponse(registration.getStudent()))
                 .status(registration.getStatus())
                 .registrationDate(registration.getRegistrationDate())
                 .semester(registration.getSemester())
