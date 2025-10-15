@@ -1,19 +1,18 @@
 package com.StudentManager.StudentManager.DTO;
 
+import com.StudentManager.StudentManager.Model.Enum.Period;
 import com.StudentManager.StudentManager.Model.Enum.Status;
 import lombok.Builder;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Builder
-public record RegistrationResponse(UUID id,
-                                   StudentResponse student,
-                                   CollegeClassResponse collegeClass,
+public record CollegeClassResponse(UUID id,
+                                   Period period,
+                                   List<RegistrationDetailResponse> registrations,
                                    Status status,
-                                   LocalDate registrationDate,
-                                   Integer semester,
                                    LocalDateTime createdAt,
                                    LocalDateTime updatedAt) {
 }

@@ -1,6 +1,7 @@
 package com.StudentManager.StudentManager.Model;
 
 import com.StudentManager.StudentManager.Model.Enum.Status;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -30,8 +31,13 @@ public class Registration {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "student_id", nullable = false)
-    @JsonIgnore
+    @JsonBackReference
     private Student student;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "college_class_id", nullable = false)
+    @JsonBackReference
+    private CollegeClass collegeClass;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

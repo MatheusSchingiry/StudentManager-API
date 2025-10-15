@@ -1,5 +1,6 @@
 package com.StudentManager.StudentManager.Model;
 
+import com.StudentManager.StudentManager.Model.Enum.Period;
 import com.StudentManager.StudentManager.Model.Enum.Status;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -12,7 +13,6 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -22,39 +22,25 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "tb_students")
+@Table(name = "tb_college_classes")
 @EntityListeners(AuditingEntityListener.class)
-public class Student {
+public class CollegeClass {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String name;
+    private Period period;
 
-    @Column(nullable = false)
-    private Long registerNumber;
-
-    @Column(nullable = false)
-    private String address;
-
-    @Column(nullable = false)
-    private LocalDate birthDate;
-
-    @Column(nullable = false)
-    private String email;
-
-    @Column(nullable = true)
-    private Long phoneNumber;
+    @OneToMany(mappedBy = "collegeClass", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Registration> registrations;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Status status;
-
-    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
-    private List<Registration> registrations;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)

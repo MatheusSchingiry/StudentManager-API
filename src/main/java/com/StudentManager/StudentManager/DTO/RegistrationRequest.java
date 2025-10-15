@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 public record RegistrationRequest(UUID studentId,
+                                  UUID collegeClassId,
                                   Status status,
                                   LocalDate registrationDate,
                                   Integer semester) {

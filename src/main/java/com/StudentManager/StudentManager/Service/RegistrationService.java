@@ -31,10 +31,18 @@ public class RegistrationService {
         return registrationMapper.toRegistrationResponse(registrationRepository.findById(id).orElseThrow(() -> new RuntimeException("Registration not found")));
     }
 
-    public RegistrationResponse getRegistrationByStudentId(UUID studentId) {
+    public List<RegistrationResponse> getRegistrationByStudentId(UUID studentId) {
         return registrationRepository.findByStudentId(studentId)
+                .stream()
                 .map(registrationMapper::toRegistrationResponse)
-                .orElseThrow(() -> new RuntimeException("Registration not found"));
+                .collect(Collectors.toList());
+    }
+
+    public List<RegistrationResponse> getRegistrationByCollegeClassId(UUID collegeClassId) {
+        return registrationRepository.findByCollegeClassId(collegeClassId)
+                .stream()
+                .map(registrationMapper::toRegistrationResponse)
+                .collect(Collectors.toList());
     }
 
     public RegistrationResponse createRegistration(RegistrationRequest registration) {

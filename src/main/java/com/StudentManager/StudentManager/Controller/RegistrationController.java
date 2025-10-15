@@ -19,7 +19,7 @@ public class RegistrationController {
     }
 
     @GetMapping
-    public List<RegistrationResponse> getAll() {
+    public List<RegistrationResponse> getAllRegistration() {
         return registrationService.getAllRegistration();
     }
 
@@ -29,8 +29,13 @@ public class RegistrationController {
     }
 
     @GetMapping("/student/{studentId}")
-    public RegistrationResponse getRegistrationByStudentId(@PathVariable UUID studentId) {
+    public List<RegistrationResponse> getRegistrationByStudentId(@PathVariable UUID studentId) {
         return registrationService.getRegistrationByStudentId(studentId);
+    }
+
+    @GetMapping("/class/{collegeClassId}")
+    public List<RegistrationResponse> getRegistrationByCollegeClassId(@PathVariable UUID collegeClassId) {
+        return registrationService.getRegistrationByCollegeClassId(collegeClassId);
     }
 
     @PostMapping

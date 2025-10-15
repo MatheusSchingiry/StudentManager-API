@@ -3,11 +3,9 @@ package com.StudentManager.StudentManager.Mapper;
 import com.StudentManager.StudentManager.DTO.StudentRequest;
 import com.StudentManager.StudentManager.DTO.StudentResponse;
 import com.StudentManager.StudentManager.Model.Student;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
-@RequiredArgsConstructor
 public class StudentMapper {
 
     public Student toStudent(StudentRequest studentRequest) {
