@@ -12,6 +12,7 @@ import java.util.UUID;
 public record CollegeClassResponse(UUID id,
                                    Period period,
                                    List<RegistrationDetailResponse> registrations,
+                                   CourseResponse courses,
                                    Status status,
                                    LocalDateTime createdAt,
                                    LocalDateTime updatedAt) {
