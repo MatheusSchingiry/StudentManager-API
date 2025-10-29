@@ -8,5 +8,6 @@ public record CourseRequest(UUID id,
                             String name,
                             String description,
                             Integer workload,
+                            UUID unitId,
                             Status status) {
 }

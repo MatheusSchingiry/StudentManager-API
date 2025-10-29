@@ -3,16 +3,14 @@ package com.StudentManager.StudentManager.Model;
 import com.StudentManager.StudentManager.Model.Enum.Status;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Data
@@ -39,9 +37,17 @@ public class Course {
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<CollegeClass> collegeClasses;
 
+    @ManyToMany(mappedBy = "courses")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private Set<Unit> units;
+
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Status status;
 
     @CreatedDate

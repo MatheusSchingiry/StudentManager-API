@@ -5,6 +5,7 @@ import lombok.Builder;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Builder
@@ -13,6 +14,7 @@ public record CourseResponse(UUID id,
                              String description,
                              Integer workload,
                              List<CollegeClassDetailResponse> collegeClass,
+                             Set<UnitResponse> units,
                              Status status,
                              LocalDateTime createdAt,
                              LocalDateTime updatedAt) {

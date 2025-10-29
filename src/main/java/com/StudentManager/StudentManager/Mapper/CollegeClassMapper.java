@@ -1,11 +1,9 @@
 package com.StudentManager.StudentManager.Mapper;
 
-import com.StudentManager.StudentManager.DTO.CollegeClassDetailResponse;
-import com.StudentManager.StudentManager.DTO.CollegeClassRequest;
-import com.StudentManager.StudentManager.DTO.CollegeClassResponse;
-import com.StudentManager.StudentManager.DTO.RegistrationDetailResponse;
+import com.StudentManager.StudentManager.DTO.*;
 import com.StudentManager.StudentManager.Model.CollegeClass;
 import com.StudentManager.StudentManager.Repository.CourseRepository;
+import com.StudentManager.StudentManager.Repository.UnitRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
@@ -17,12 +15,16 @@ public class CollegeClassMapper {
 
     private final RegistrationMapper registrationMapper;
     private final CourseMapper courseMapper;
+    private final UnitMapper unitMapper;
     private final CourseRepository courseRepository;
+    private final UnitRepository unitRepository;
 
-    public CollegeClassMapper(RegistrationMapper registrationMapper, CourseMapper courseMapper, CourseRepository courseRepository) {
+    public CollegeClassMapper(RegistrationMapper registrationMapper, CourseMapper courseMapper, UnitMapper unitMapper, CourseRepository courseRepository, UnitRepository unitRepository) {
         this.registrationMapper = registrationMapper;
         this.courseMapper = courseMapper;
+        this.unitMapper = unitMapper;
         this.courseRepository = courseRepository;
+        this.unitRepository = unitRepository;
     }
 
     public CollegeClass toCollegeClass(CollegeClassRequest collegeClassRequest) {
@@ -31,6 +33,7 @@ public class CollegeClassMapper {
                 .id(collegeClassRequest.id())
                 .period(collegeClassRequest.period())
                 .course(courseRepository.findById(collegeClassRequest.courseId()).orElseThrow(() -> new RuntimeException("Course not found")))
+                .unit(unitRepository.findById(collegeClassRequest.unitId()).orElseThrow(() -> new RuntimeException("Unit not found")))
                 .status(collegeClassRequest.status())
                 .build();
     }
@@ -41,6 +44,7 @@ public class CollegeClassMapper {
                     .id(collegeClass.getId())
                     .period(collegeClass.getPeriod())
                     .courses(courseMapper.toCourseResponse(collegeClass.getCourse()))
+                    .unit(unitMapper.toUnitResponse(collegeClass.getUnit()))
                     .status(collegeClass.getStatus())
                     .createdAt(collegeClass.getCreatedAt())
                     .updatedAt(collegeClass.getUpdatedAt())
@@ -59,6 +63,7 @@ public class CollegeClassMapper {
                 .id(collegeClass.getId())
                 .period(collegeClass.getPeriod())
                 .courses(courseMapper.toCourseResponse(collegeClass.getCourse()))
+                .unit(unitMapper.toUnitResponse(collegeClass.getUnit()))
                 .registrations(registrationDetails)
                 .status(collegeClass.getStatus())
                 .createdAt(collegeClass.getCreatedAt())

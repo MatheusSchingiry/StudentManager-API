@@ -1,53 +1,62 @@
 package com.StudentManager.StudentManager.Model;
 
-import com.StudentManager.StudentManager.Model.Enum.Period;
 import com.StudentManager.StudentManager.Model.Enum.Status;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Data
 @Entity
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "tb_college_classes")
+@Table(name = "tb_unit")
 @EntityListeners(AuditingEntityListener.class)
-public class CollegeClass {
+public class Unit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Period period;
+    private String name;
 
-    @OneToMany(mappedBy = "collegeClass", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Column(nullable = false)
+    private String street;
+
+    @Column(nullable = false)
+    private Integer number;
+
+    @Column(nullable = false)
+    private String city;
+
+    @Column(nullable = false)
+    private String state;
+
+    @Column(nullable = false)
+    private Integer zipCode;
+
+    @ManyToMany
+    @JoinTable(
+            name = "unit_courses",
+            joinColumns = @JoinColumn(name = "unit_id"),
+            inverseJoinColumns = @JoinColumn(name = "course_id")
+    )
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private Set<Course> courses = new HashSet<>();
+
+    @OneToMany(mappedBy = "unit", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
-    private List<Registration> registrations;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "course_id", nullable = false, updatable = false)
-    @JsonBackReference
-    private Course course;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "unit_id", nullable = false)
-    @JsonBackReference
-    private Unit unit;
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<CollegeClass> collegeClasses;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

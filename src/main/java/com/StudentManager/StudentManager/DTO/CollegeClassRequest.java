@@ -8,5 +8,6 @@ import java.util.UUID;
 public record CollegeClassRequest(UUID id,
                                   Period period,
                                   Status status,
-                                  UUID courseId) {
+                                  UUID courseId,
+                                  UUID unitId) {
 }

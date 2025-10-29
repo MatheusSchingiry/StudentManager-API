@@ -13,6 +13,7 @@ public record CollegeClassResponse(UUID id,
                                    Period period,
                                    List<RegistrationDetailResponse> registrations,
                                    CourseResponse courses,
+                                   UnitResponse unit,
                                    Status status,
                                    LocalDateTime createdAt,
                                    LocalDateTime updatedAt) {
