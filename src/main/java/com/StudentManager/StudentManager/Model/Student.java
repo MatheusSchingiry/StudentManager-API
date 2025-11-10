@@ -1,19 +1,14 @@
 package com.StudentManager.StudentManager.Model;
 
-import com.StudentManager.StudentManager.Model.Enum.Status;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.StudentManager.StudentManager.Model.Base.Address;
+import com.StudentManager.StudentManager.Model.Base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,8 +18,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "tb_students")
-@EntityListeners(AuditingEntityListener.class)
-public class Student {
+public class Student extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -33,34 +27,20 @@ public class Student {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
-    private Long registerNumber;
-
-    @Column(nullable = false)
-    private String address;
+    @Column(unique = true, nullable = false)
+    private String registerNumber;
 
     @Column(nullable = false)
     private LocalDate birthDate;
 
-    @Column(nullable = false)
+    @Embedded
+    private Address address;
+
+    @Column(unique = true, nullable = false)
     private String email;
 
-    @Column(nullable = true)
-    private Long phoneNumber;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Status status;
+    private String phoneNumber;
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
     private List<Registration> registrations;
-
-    @CreatedDate
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
-    @LastModifiedDate
-    @Column(nullable = false)
-    private LocalDateTime updatedAt;
 }

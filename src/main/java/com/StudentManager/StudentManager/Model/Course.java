@@ -1,14 +1,10 @@
 package com.StudentManager.StudentManager.Model;
 
-import com.StudentManager.StudentManager.Model.Enum.Status;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.StudentManager.StudentManager.Model.Base.BaseEntity;
+import com.StudentManager.StudentManager.Model.Enum.Period;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -19,8 +15,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "tb_courses")
-@EntityListeners(AuditingEntityListener.class)
-public class Course {
+public class Course extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -29,32 +24,30 @@ public class Course {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
+    @Column(length = 1000, nullable = false)
     private String description;
 
     @Column(nullable = false)
     private Integer workload;
 
-    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    private List<CollegeClass> collegeClasses;
+    @ElementCollection(targetClass = Period.class)
+    @Enumerated(EnumType.STRING)
+    @CollectionTable(name = "tb_course_periods", joinColumns = @JoinColumn(name = "course_id"))
+    @Column(name = "period")
+    private Set<Period> periods;
 
-    @ManyToMany(mappedBy = "courses")
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "tb_course_unit",
+            joinColumns = @JoinColumn(name = "course_id"),
+            inverseJoinColumns = @JoinColumn(name = "unit_id"))
     private Set<Unit> units;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Status status;
+    @ManyToMany
+    @JoinTable(name = "tb_course_subject",
+            joinColumns = @JoinColumn(name = "course_id"),
+            inverseJoinColumns = @JoinColumn(name = "subject_id"))
+    private Set<Subject> subjects;
 
-    @CreatedDate
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
-    @LastModifiedDate
-    @Column(nullable = false)
-    private LocalDateTime updatedAt;
+    @OneToMany(mappedBy = "course")
+    private List<CollegeClass> collegeClasses;
 }

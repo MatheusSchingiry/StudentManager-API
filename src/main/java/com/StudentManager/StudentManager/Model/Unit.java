@@ -1,14 +1,10 @@
 package com.StudentManager.StudentManager.Model;
 
-import com.StudentManager.StudentManager.Model.Enum.Status;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.StudentManager.StudentManager.Model.Base.Address;
+import com.StudentManager.StudentManager.Model.Base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Data
@@ -16,9 +12,8 @@ import java.util.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "tb_unit")
-@EntityListeners(AuditingEntityListener.class)
-public class Unit {
+@Table(name = "tb_units")
+public class Unit extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -27,46 +22,15 @@ public class Unit {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
-    private String street;
+    @Embedded
+    private Address address;
 
-    @Column(nullable = false)
-    private Integer number;
+    @ManyToMany(mappedBy = "units")
+    private Set<Course> courses;
 
-    @Column(nullable = false)
-    private String city;
-
-    @Column(nullable = false)
-    private String state;
-
-    @Column(nullable = false)
-    private Integer zipCode;
-
-    @ManyToMany
-    @JoinTable(
-            name = "unit_courses",
-            joinColumns = @JoinColumn(name = "unit_id"),
-            inverseJoinColumns = @JoinColumn(name = "course_id")
-    )
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    private Set<Course> courses = new HashSet<>();
+    @ManyToMany(mappedBy = "units")
+    private Set<Teacher> teachers;
 
     @OneToMany(mappedBy = "unit", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
     private List<CollegeClass> collegeClasses;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Status status;
-
-    @CreatedDate
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
-    @LastModifiedDate
-    @Column(nullable = false)
-    private LocalDateTime updatedAt;
 }
