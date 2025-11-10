@@ -1,7 +1,6 @@
 package com.StudentManager.StudentManager.Controller;
 
-import com.StudentManager.StudentManager.DTO.CourseRequest;
-import com.StudentManager.StudentManager.DTO.CourseResponse;
+import com.StudentManager.StudentManager.Model.Course;
 import com.StudentManager.StudentManager.Service.CourseService;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,24 +18,20 @@ public class CourseController {
     }
 
     @GetMapping
-    public List<CourseResponse> getAllCourses() {
+    public List<Course> getAllCourses() {
         return courseService.getAllCourses();
     }
 
     @GetMapping("/{id}")
-    public CourseResponse getCourseById(@PathVariable UUID id) {
-        return courseService.getCourseById(id);
-    }
+    public Course getCourseById(@PathVariable UUID id) { return courseService.getCourseById(id);}
 
     @PostMapping
-    public CourseResponse createCourse(@RequestBody CourseRequest course) {
+    public Course createCourse(@RequestBody Course course) {
         return courseService.createCourse(course);
     }
 
     @PutMapping("/{id}")
-    public CourseResponse updateCourse(@PathVariable UUID id, @RequestBody CourseRequest course) {
-        return courseService.updateCourse(id, course);
-    }
+    public Course updateCourse(@PathVariable UUID id, @RequestBody Course course) { return courseService.updateCourse(id, course);}
 
     @DeleteMapping("/{id}")
     public void deleteCourse(@PathVariable UUID id) {

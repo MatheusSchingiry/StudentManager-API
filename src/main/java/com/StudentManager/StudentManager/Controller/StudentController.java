@@ -1,7 +1,6 @@
 package com.StudentManager.StudentManager.Controller;
 
-import com.StudentManager.StudentManager.DTO.StudentRequest;
-import com.StudentManager.StudentManager.DTO.StudentResponse;
+import com.StudentManager.StudentManager.Model.Student;
 import com.StudentManager.StudentManager.Service.StudentService;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,37 +13,20 @@ public class StudentController {
 
     private final StudentService studentService;
 
-    public StudentController(StudentService studentService) {
-        this.studentService = studentService;
-    }
+    public StudentController(StudentService studentService) { this.studentService = studentService;}
 
     @GetMapping
-    public List<StudentResponse> getAllStudents() {
-        return studentService.getAllStudents();
-    }
+    public List<Student> getAllStudents() { return studentService.getAllStudents(); }
 
-    @GetMapping("/email/{email}")
-    public StudentResponse getStudentByEmail(@PathVariable String email) {
-        return studentService.getStudentByEmail(email);
-    }
-
-    @GetMapping("/registerNumber/{registerNumber}")
-    public StudentResponse getStudentByRegisterNumber(@PathVariable Long registerNumber) {
-        return studentService.getStudentByRegisterNumber(registerNumber);
-    }
+    @GetMapping("/{id}")
+    public Student getStudentById(@PathVariable UUID id) { return studentService.getStudentById(id); }
 
     @PostMapping
-    public StudentResponse createStudent(@RequestBody StudentRequest student) {
-        return studentService.createStudent(student);
-    }
+    public Student createStudent(@RequestBody Student student) { return studentService.createStudent(student); }
 
     @PutMapping("/{id}")
-    public StudentResponse editStudentById(@PathVariable UUID id, @RequestBody StudentRequest student) {
-        return studentService.editStudentById(id, student);
-    }
+    public Student updateStudent(@PathVariable UUID id, @RequestBody Student student) { return studentService.updateStudent(id, student); }
 
     @DeleteMapping("/{id}")
-    public void deleteStudentById(@PathVariable UUID id) {
-        studentService.deleteStudentById(id);
-    }
+    public void deleteStudent(@PathVariable UUID id) { studentService.deleteStudent(id); }
 }

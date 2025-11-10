@@ -1,7 +1,6 @@
 package com.StudentManager.StudentManager.Controller;
 
-import com.StudentManager.StudentManager.DTO.RegistrationRequest;
-import com.StudentManager.StudentManager.DTO.RegistrationResponse;
+import com.StudentManager.StudentManager.Model.Registration;
 import com.StudentManager.StudentManager.Service.RegistrationService;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,42 +13,19 @@ public class RegistrationController {
 
     private final RegistrationService registrationService;
 
-    public RegistrationController(RegistrationService registrationService) {
-        this.registrationService = registrationService;
-    }
+    public RegistrationController(RegistrationService registrationService) { this.registrationService = registrationService; }
 
     @GetMapping
-    public List<RegistrationResponse> getAllRegistration() {
-        return registrationService.getAllRegistration();
-    }
+    public List<Registration> getAllRegistrations() { return registrationService.getAllRegistrations(); }
 
     @GetMapping("/{id}")
-    public RegistrationResponse getRegistrationById(@PathVariable UUID id) {
-        return registrationService.getRegistrationById(id);
-    }
-
-    @GetMapping("/student/{studentId}")
-    public List<RegistrationResponse> getRegistrationByStudentId(@PathVariable UUID studentId) {
-        return registrationService.getRegistrationByStudentId(studentId);
-    }
-
-    @GetMapping("/class/{collegeClassId}")
-    public List<RegistrationResponse> getRegistrationByCollegeClassId(@PathVariable UUID collegeClassId) {
-        return registrationService.getRegistrationByCollegeClassId(collegeClassId);
-    }
+    public Registration getRegistrationById(@PathVariable UUID id) { return registrationService.getRegistrationById(id); }
 
     @PostMapping
-    public RegistrationResponse createRegistration(@RequestBody RegistrationRequest registration) {
-        return registrationService.createRegistration(registration);
-    }
-
-    @PutMapping("/{id}")
-    public RegistrationResponse editRegistrationById(@PathVariable UUID id, @RequestBody RegistrationRequest registration) {
-        return registrationService.editRegistrationById(id, registration);
-    }
+    public Registration createRegistration(@RequestBody Registration registration) { return registrationService.createRegistration(registration); }
 
     @DeleteMapping("/{id}")
-    public void deleteRegistrationById(@PathVariable UUID id) {
-        registrationService.deleteRegistrationById(id);
+    public void deleteRegistration(@PathVariable UUID id) {
+        registrationService.deleteRegistration(id);
     }
 }
