@@ -2,6 +2,7 @@ package com.StudentManager.StudentManager.Controller;
 
 import com.StudentManager.StudentManager.Model.Registration;
 import com.StudentManager.StudentManager.Service.RegistrationService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,16 +17,24 @@ public class RegistrationController {
     public RegistrationController(RegistrationService registrationService) { this.registrationService = registrationService; }
 
     @GetMapping
-    public List<Registration> getAllRegistrations() { return registrationService.getAllRegistrations(); }
+    public ResponseEntity<List<Registration>> getAllRegistrations() {
+        return ResponseEntity.ok(registrationService.getAllRegistrations());
+    }
 
     @GetMapping("/{id}")
-    public Registration getRegistrationById(@PathVariable UUID id) { return registrationService.getRegistrationById(id); }
+    public ResponseEntity<Registration> getRegistrationById(@PathVariable UUID id) {
+        return ResponseEntity.ok(registrationService.getRegistrationById(id));
+    }
 
     @PostMapping
-    public Registration createRegistration(@RequestBody Registration registration) { return registrationService.createRegistration(registration); }
+    public ResponseEntity<String> createRegistration(@RequestBody Registration registration) {
+        registrationService.createRegistration(registration);
+        return ResponseEntity.status(201).body("Registration created successfully");
+    }
 
     @DeleteMapping("/{id}")
-    public void deleteRegistration(@PathVariable UUID id) {
+    public ResponseEntity<String> deleteRegistration(@PathVariable UUID id) {
         registrationService.deleteRegistration(id);
+        return ResponseEntity.status(200).body("Registration deleted successfully");
     }
 }

@@ -2,6 +2,7 @@ package com.StudentManager.StudentManager.Controller;
 
 import com.StudentManager.StudentManager.Model.Course;
 import com.StudentManager.StudentManager.Service.CourseService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,23 +19,30 @@ public class CourseController {
     }
 
     @GetMapping
-    public List<Course> getAllCourses() {
-        return courseService.getAllCourses();
+    public ResponseEntity<List<Course>> getAllCourses() {
+        return ResponseEntity.ok(courseService.getAllCourses());
     }
 
     @GetMapping("/{id}")
-    public Course getCourseById(@PathVariable UUID id) { return courseService.getCourseById(id);}
+    public ResponseEntity<Course> getCourseById(@PathVariable UUID id) {
+        return ResponseEntity.ok(courseService.getCourseById(id));
+    }
 
     @PostMapping
-    public Course createCourse(@RequestBody Course course) {
-        return courseService.createCourse(course);
+    public ResponseEntity<String> createCourse(@RequestBody Course course) {
+        courseService.createCourse(course);
+        return ResponseEntity.status(201).body("Course created successfully");
     }
 
     @PutMapping("/{id}")
-    public Course updateCourse(@PathVariable UUID id, @RequestBody Course course) { return courseService.updateCourse(id, course);}
+    public ResponseEntity<String> updateCourse(@PathVariable UUID id, @RequestBody Course course) {
+        courseService.updateCourse(id, course);
+        return ResponseEntity.status(200).body("Course updated successfully");
+    }
 
     @DeleteMapping("/{id}")
-    public void deleteCourse(@PathVariable UUID id) {
+    public ResponseEntity<String> deleteCourse(@PathVariable UUID id) {
         courseService.deleteCourse(id);
+        return ResponseEntity.status(200).body("Course deleted successfully");
     }
 }

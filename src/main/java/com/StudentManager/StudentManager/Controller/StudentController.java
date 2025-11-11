@@ -2,6 +2,7 @@ package com.StudentManager.StudentManager.Controller;
 
 import com.StudentManager.StudentManager.Model.Student;
 import com.StudentManager.StudentManager.Service.StudentService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,17 +17,30 @@ public class StudentController {
     public StudentController(StudentService studentService) { this.studentService = studentService;}
 
     @GetMapping
-    public List<Student> getAllStudents() { return studentService.getAllStudents(); }
+    public ResponseEntity<List<Student>> getAllStudents() {
+        return ResponseEntity.ok(studentService.getAllStudents());
+    }
 
     @GetMapping("/{id}")
-    public Student getStudentById(@PathVariable UUID id) { return studentService.getStudentById(id); }
+    public ResponseEntity<Student> getStudentById(@PathVariable UUID id) {
+        return ResponseEntity.ok(studentService.getStudentById(id));
+    }
 
     @PostMapping
-    public Student createStudent(@RequestBody Student student) { return studentService.createStudent(student); }
+    public ResponseEntity<String> createStudent(@RequestBody Student student) {
+        studentService.createStudent(student);
+        return ResponseEntity.status(201).body("Student created successfully");
+    }
 
     @PutMapping("/{id}")
-    public Student updateStudent(@PathVariable UUID id, @RequestBody Student student) { return studentService.updateStudent(id, student); }
+    public ResponseEntity<String> updateStudent(@PathVariable UUID id, @RequestBody Student student) {
+        studentService.updateStudent(id, student);
+        return ResponseEntity.status(200).body("Student updated successfully");
+    }
 
     @DeleteMapping("/{id}")
-    public void deleteStudent(@PathVariable UUID id) { studentService.deleteStudent(id); }
+    public ResponseEntity<String> deleteStudent(@PathVariable UUID id) {
+        studentService.deleteStudent(id);
+        return ResponseEntity.status(200).body("Student deleted successfully");
+    }
 }
