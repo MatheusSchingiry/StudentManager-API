@@ -21,11 +21,13 @@ public class UnitService {
 
     public Unit getUnitById(UUID id) { return unitRepository.findById(id).orElseThrow(() -> new RuntimeException("Unit not found"));}
 
+    @Transactional
     public Unit createUnit(Unit unit){
         unit.setStatus(Status.ACTIVE);
         return unitRepository.save(unit);
     }
 
+    @Transactional
     public Unit updateUnit(UUID id, Unit unit){
         Unit existingUnit = unitRepository.findById(id).orElseThrow(() -> new RuntimeException("Unit not found"));
 
@@ -35,6 +37,7 @@ public class UnitService {
         return unitRepository.save(existingUnit);
     }
 
+    @Transactional
     public void deleteUnit(UUID id){
         Unit existingUnit = unitRepository.findById(id).orElseThrow(() -> new RuntimeException("Unit not found"));
 

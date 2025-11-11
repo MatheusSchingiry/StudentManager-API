@@ -3,6 +3,7 @@ package com.StudentManager.StudentManager.Service;
 import com.StudentManager.StudentManager.Model.Enum.Status;
 import com.StudentManager.StudentManager.Model.Registration;
 import com.StudentManager.StudentManager.Repository.RegistrationRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +20,7 @@ public class RegistrationService {
 
     public Registration getRegistrationById(UUID id) { return registrationRepository.findById(id).orElseThrow(() -> new RuntimeException("Registration not found")); }
 
+    @Transactional
     public Registration createRegistration(Registration registration) {
         registration.setStatus(Status.ACTIVE);
         return registrationRepository.save(registration);
@@ -32,6 +34,7 @@ public class RegistrationService {
         return registrationRepository.save(existingRegistration);
     }
 
+    @Transactional
     public void deleteRegistration(UUID id) {
         Registration existingRegistration = registrationRepository.findById(id).orElseThrow(() -> new RuntimeException("Registration not found"));
 

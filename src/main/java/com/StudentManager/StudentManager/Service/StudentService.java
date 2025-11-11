@@ -3,6 +3,7 @@ package com.StudentManager.StudentManager.Service;
 import com.StudentManager.StudentManager.Model.Enum.Status;
 import com.StudentManager.StudentManager.Model.Student;
 import com.StudentManager.StudentManager.Repository.StudentRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,11 +24,13 @@ public class StudentService {
 
     public Student getStudentById(UUID id) { return studentRepository.findById(id).orElseThrow(() -> new RuntimeException("Student not found"));}
 
+    @Transactional
     public Student createStudent(Student student) {
         student.setStatus(Status.ACTIVE);
         return studentRepository.save(student);
     }
 
+    @Transactional
     public Student updateStudent(UUID id, Student student) {
         Student existingStudent = studentRepository.findById(id).orElseThrow(() -> new RuntimeException("Student not found"));
 
@@ -41,6 +44,7 @@ public class StudentService {
         return studentRepository.save(existingStudent);
     }
 
+    @Transactional
     public void deleteStudent(UUID id) {
         Student student = studentRepository.findById(id).orElseThrow(() -> new RuntimeException("Student not found"));
 

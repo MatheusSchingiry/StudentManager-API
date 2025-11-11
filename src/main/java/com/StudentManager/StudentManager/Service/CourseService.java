@@ -3,6 +3,7 @@ package com.StudentManager.StudentManager.Service;
 import com.StudentManager.StudentManager.Model.Course;
 import com.StudentManager.StudentManager.Model.Enum.Status;
 import com.StudentManager.StudentManager.Repository.CourseRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,11 +20,13 @@ public class CourseService {
 
     public Course getCourseById(UUID id) { return courseRepository.findById(id).orElseThrow(() -> new RuntimeException("Course not found")); }
 
+    @Transactional
     public Course createCourse(Course course) {
         course.setStatus(Status.ACTIVE);
         return courseRepository.save(course);
     }
 
+    @Transactional
     public Course updateCourse(UUID id, Course courseDetails) {
         Course course = courseRepository.findById(id).orElseThrow(() -> new RuntimeException("Course not found"));
 
@@ -34,6 +37,7 @@ public class CourseService {
         return courseRepository.save(course);
     }
 
+    @Transactional
     public void deleteCourse(UUID id) {
         Course existingCourse = courseRepository.findById(id).orElseThrow(() -> new RuntimeException("Course not found"));
 

@@ -3,6 +3,7 @@ package com.StudentManager.StudentManager.Service;
 import com.StudentManager.StudentManager.Model.CollegeClass;
 import com.StudentManager.StudentManager.Model.Enum.Status;
 import com.StudentManager.StudentManager.Repository.CollegeClassRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,11 +20,13 @@ public class CollegeClassService {
 
     public CollegeClass getCollegeClassById(UUID id) { return collegeClassRepository.findById(id).orElseThrow(() -> new RuntimeException("CollegeClass not found"));}
 
+    @Transactional
     public CollegeClass createCollegeClass(CollegeClass collegeClass) {
         collegeClass.setStatus(Status.ACTIVE);
         return collegeClassRepository.save(collegeClass);
     }
 
+    @Transactional
     public void deleteCollegeClass(UUID id) {
         CollegeClass existingCollegeClass = collegeClassRepository.findById(id).orElseThrow(() -> new RuntimeException("CollegeClass not found"));
 

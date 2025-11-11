@@ -3,6 +3,7 @@ package com.StudentManager.StudentManager.Service;
 import com.StudentManager.StudentManager.Model.Enum.Status;
 import com.StudentManager.StudentManager.Model.Subject;
 import com.StudentManager.StudentManager.Repository.SubjectRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,11 +20,13 @@ public class SubjectService {
 
     public Subject getSubjectById(UUID id) { return subjectRepository.findById(id).orElseThrow(() -> new RuntimeException("Subject not found"));}
 
+    @Transactional
     public Subject createSubject(Subject subject) {
         subject.setStatus(Status.ACTIVE);
         return subjectRepository.save(subject);
     }
 
+    @Transactional
     public Subject updateSubject(UUID id, Subject subjectDetail) {
         Subject subject = subjectRepository.findById(id).orElseThrow(() -> new RuntimeException("Subject not found"));
 
@@ -34,6 +37,7 @@ public class SubjectService {
         return subjectRepository.save(subject);
     }
 
+    @Transactional
     public void deleteSubject(UUID id) {
         Subject existingSubject = subjectRepository.findById(id).orElseThrow(() -> new RuntimeException("Subject not found"));
 

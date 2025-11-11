@@ -3,6 +3,7 @@ package com.StudentManager.StudentManager.Service;
 import com.StudentManager.StudentManager.Model.Enum.Status;
 import com.StudentManager.StudentManager.Model.Teacher;
 import com.StudentManager.StudentManager.Repository.TeacherRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,11 +20,13 @@ public class TeacherService {
 
     public Teacher getTeacherById(UUID id) { return teacherRepository.findById(id).orElseThrow(() -> new RuntimeException("Teacher not found"));}
 
+    @Transactional
     public Teacher createTeacher(Teacher teacher) {
         teacher.setStatus(Status.ACTIVE);
         return teacherRepository.save(teacher);
     }
 
+    @Transactional
     public Teacher updateTeacher(UUID id, Teacher teacherDetail) {
         Teacher teacher = teacherRepository.findById(id).orElseThrow(() -> new RuntimeException("Teacher not found"));
 
@@ -37,6 +40,7 @@ public class TeacherService {
         return teacherRepository.save(teacher);
     }
 
+    @Transactional
     public void deleteTeacher(UUID id) {
         Teacher existingTeacher = teacherRepository.findById(id).orElseThrow(() -> new RuntimeException("Teacher not found"));
 
