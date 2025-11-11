@@ -16,7 +16,7 @@ public class CourseService {
 
     public CourseService(CourseRepository courseRepository) { this.courseRepository = courseRepository; }
 
-    public List<Course> getAllCourses() { return courseRepository.findAll();}
+    public List<Course> getAllCourses() { return courseRepository.findAllByStatus(Status.ACTIVE);}
 
     public Course getCourseById(UUID id) { return courseRepository.findById(id).orElseThrow(() -> new RuntimeException("Course not found")); }
 

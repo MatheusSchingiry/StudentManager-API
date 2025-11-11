@@ -17,7 +17,7 @@ public class UnitService {
     public UnitService(UnitRepository unitRepository) { this.unitRepository = unitRepository;}
 
     @Transactional
-    public List<Unit> getAllUnits() { return unitRepository.findAll(); }
+    public List<Unit> getAllUnits() { return unitRepository.findAllByStatus(Status.ACTIVE); }
 
     public Unit getUnitById(UUID id) { return unitRepository.findById(id).orElseThrow(() -> new RuntimeException("Unit not found"));}
 

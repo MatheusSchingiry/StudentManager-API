@@ -16,7 +16,7 @@ public class SubjectService {
 
     public SubjectService(SubjectRepository subjectRepository) { this.subjectRepository = subjectRepository;}
 
-    public List<Subject> getAllSubjects() { return subjectRepository.findAll();}
+    public List<Subject> getAllSubjects() { return subjectRepository.findAllByStatus(Status.ACTIVE);}
 
     public Subject getSubjectById(UUID id) { return subjectRepository.findById(id).orElseThrow(() -> new RuntimeException("Subject not found"));}
 

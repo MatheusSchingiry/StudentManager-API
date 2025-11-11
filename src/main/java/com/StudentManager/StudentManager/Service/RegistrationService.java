@@ -16,7 +16,7 @@ public class RegistrationService {
 
     public RegistrationService(RegistrationRepository registrationRepository) { this.registrationRepository = registrationRepository;}
 
-    public List<Registration> getAllRegistrations(){ return registrationRepository.findAll(); }
+    public List<Registration> getAllRegistrations(){ return registrationRepository.findAllByStatus(Status.ACTIVE); }
 
     public Registration getRegistrationById(UUID id) { return registrationRepository.findById(id).orElseThrow(() -> new RuntimeException("Registration not found")); }
 

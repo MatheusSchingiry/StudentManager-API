@@ -16,7 +16,7 @@ public class CollegeClassService {
 
     public CollegeClassService(CollegeClassRepository collegeClassRepository) { this.collegeClassRepository = collegeClassRepository;}
 
-    public List<CollegeClass> getAllCollegeClasses() { return collegeClassRepository.findAll();}
+    public List<CollegeClass> getAllCollegeClasses() { return collegeClassRepository.findAllByStatus(Status.ACTIVE);}
 
     public CollegeClass getCollegeClassById(UUID id) { return collegeClassRepository.findById(id).orElseThrow(() -> new RuntimeException("CollegeClass not found"));}
 

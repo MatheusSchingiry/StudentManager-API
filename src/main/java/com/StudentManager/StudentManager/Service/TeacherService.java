@@ -16,7 +16,7 @@ public class TeacherService {
 
     public TeacherService(TeacherRepository teacherRepository) { this.teacherRepository = teacherRepository; }
 
-    public List<Teacher> getAllTeachers() { return teacherRepository.findAll();}
+    public List<Teacher> getAllTeachers() { return teacherRepository.findAllByStatus(Status.ACTIVE);}
 
     public Teacher getTeacherById(UUID id) { return teacherRepository.findById(id).orElseThrow(() -> new RuntimeException("Teacher not found"));}
 

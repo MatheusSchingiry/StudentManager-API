@@ -19,7 +19,7 @@ public class StudentService {
     }
 
     public List<Student> getAllStudents() {
-        return studentRepository.findAll();
+        return studentRepository.findAllByStatus(Status.ACTIVE);
     }
 
     public Student getStudentById(UUID id) { return studentRepository.findById(id).orElseThrow(() -> new RuntimeException("Student not found"));}
