@@ -1,6 +1,7 @@
 package com.StudentManager.StudentManager.Controller;
 
-import com.StudentManager.StudentManager.Model.Course;
+import com.StudentManager.StudentManager.DTO.Request.CourseRequest;
+import com.StudentManager.StudentManager.DTO.Response.CourseBaseResponse;
 import com.StudentManager.StudentManager.Service.CourseService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,23 +20,23 @@ public class CourseController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Course>> getAllCourses() {
+    public ResponseEntity<List<CourseBaseResponse>> getAllCourses() {
         return ResponseEntity.ok(courseService.getAllCourses());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Course> getCourseById(@PathVariable UUID id) {
+    public ResponseEntity<CourseBaseResponse> getCourseById(@PathVariable UUID id) {
         return ResponseEntity.ok(courseService.getCourseById(id));
     }
 
     @PostMapping
-    public ResponseEntity<String> createCourse(@RequestBody Course course) {
+    public ResponseEntity<String> createCourse(@RequestBody CourseRequest course) {
         courseService.createCourse(course);
         return ResponseEntity.status(201).body("Course created successfully");
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateCourse(@PathVariable UUID id, @RequestBody Course course) {
+    public ResponseEntity<String> updateCourse(@PathVariable UUID id, @RequestBody CourseRequest course) {
         courseService.updateCourse(id, course);
         return ResponseEntity.status(200).body("Course updated successfully");
     }

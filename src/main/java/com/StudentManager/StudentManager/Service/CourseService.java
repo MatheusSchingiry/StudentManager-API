@@ -1,5 +1,8 @@
 package com.StudentManager.StudentManager.Service;
 
+import com.StudentManager.StudentManager.DTO.Request.CourseRequest;
+import com.StudentManager.StudentManager.DTO.Response.CourseBaseResponse;
+import com.StudentManager.StudentManager.Mapper.CourseMapper;
 import com.StudentManager.StudentManager.Model.Course;
 import com.StudentManager.StudentManager.Model.Enum.Status;
 import com.StudentManager.StudentManager.Repository.CourseRepository;
@@ -8,33 +11,46 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class CourseService {
 
     private final CourseRepository courseRepository;
+    private final CourseMapper courseMapper;
 
-    public CourseService(CourseRepository courseRepository) { this.courseRepository = courseRepository; }
+    public CourseService(CourseRepository courseRepository, CourseMapper courseMapper) {
+        this.courseRepository = courseRepository;
+        this.courseMapper = courseMapper;
+    }
 
-    public List<Course> getAllCourses() { return courseRepository.findAllByStatus(Status.ACTIVE);}
+    public List<CourseBaseResponse> getAllCourses() {
+        return courseRepository.findAllByStatus(Status.ACTIVE)
+                .stream()
+                .map(courseMapper::toCourseBaseResponse)
+                .collect(Collectors.toList());
+    }
 
-    public Course getCourseById(UUID id) { return courseRepository.findById(id).orElseThrow(() -> new RuntimeException("Course not found")); }
-
-    @Transactional
-    public Course createCourse(Course course) {
-        course.setStatus(Status.ACTIVE);
-        return courseRepository.save(course);
+    public CourseBaseResponse getCourseById(UUID id) {
+        return courseMapper.toCourseBaseResponse(courseRepository.findById(id).orElseThrow(() -> new RuntimeException("Course not found")));
     }
 
     @Transactional
-    public Course updateCourse(UUID id, Course courseDetails) {
+    public CourseBaseResponse createCourse(CourseRequest course) {
+        Course courseEntity = courseMapper.toCourse(course);
+        courseEntity.setStatus(Status.ACTIVE);
+        return courseMapper.toCourseBaseResponse(courseRepository.save(courseEntity));
+    }
+
+    @Transactional
+    public CourseBaseResponse updateCourse(UUID id, CourseRequest courseDetails) {
         Course course = courseRepository.findById(id).orElseThrow(() -> new RuntimeException("Course not found"));
 
-        if(courseDetails.getName() != null) { course.setName(courseDetails.getName());}
-        if(courseDetails.getDescription() != null) { course.setDescription(courseDetails.getDescription());}
-        if(courseDetails.getWorkload() != null) { course.setWorkload(courseDetails.getWorkload());}
+        if(courseDetails.name() != null) { course.setName(courseDetails.name());}
+        if(courseDetails.description() != null) { course.setDescription(courseDetails.description());}
+        if(courseDetails.workload() != null) { course.setWorkload(courseDetails.workload());}
 
-        return courseRepository.save(course);
+        return courseMapper.toCourseBaseResponse(courseRepository.save(course));
     }
 
     @Transactional
