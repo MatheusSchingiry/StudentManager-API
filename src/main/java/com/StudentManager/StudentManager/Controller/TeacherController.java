@@ -1,6 +1,7 @@
 package com.StudentManager.StudentManager.Controller;
 
-import com.StudentManager.StudentManager.Model.Teacher;
+import com.StudentManager.StudentManager.DTO.Request.TeacherRequest;
+import com.StudentManager.StudentManager.DTO.Response.TeacherBaseResponse;
 import com.StudentManager.StudentManager.Service.TeacherService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,23 +18,23 @@ public class TeacherController {
     public TeacherController(TeacherService teacherService) { this.teacherService = teacherService;}
 
     @GetMapping
-    public ResponseEntity<List<Teacher>> getAllTeachers() {
+    public ResponseEntity<List<TeacherBaseResponse>> getAllTeachers() {
         return ResponseEntity.ok(teacherService.getAllTeachers());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Teacher> getTeacherById(@PathVariable UUID id) {
+    public ResponseEntity<TeacherBaseResponse> getTeacherById(@PathVariable UUID id) {
         return ResponseEntity.ok(teacherService.getTeacherById(id));
     }
 
     @PostMapping
-    public ResponseEntity<String> createTeacher(@RequestBody Teacher teacher) {
+    public ResponseEntity<String> createTeacher(@RequestBody TeacherRequest teacher) {
         teacherService.createTeacher(teacher);
         return ResponseEntity.status(201).body("Teacher created successfully");
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateTeacher(@PathVariable UUID id, @RequestBody Teacher teacher) {
+    public ResponseEntity<String> updateTeacher(@PathVariable UUID id, @RequestBody TeacherRequest teacher) {
         teacherService.updateTeacher(id, teacher);
         return ResponseEntity.status(200).body("Teacher updated successfully");
     }
