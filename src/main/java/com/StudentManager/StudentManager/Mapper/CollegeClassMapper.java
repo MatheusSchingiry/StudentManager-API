@@ -29,6 +29,9 @@ public class CollegeClassMapper {
                 .period(collegeClass.getPeriod().name())
                 .unitName(collegeClass.getUnit().getName())
                 .courseName(collegeClass.getCourse().getName())
+                .status(collegeClass.getStatus())
+                .createdAt(collegeClass.getCreatedAt())
+                .updatedAt(collegeClass.getUpdatedAt())
                 .build();
     }
 }
