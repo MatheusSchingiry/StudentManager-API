@@ -9,6 +9,7 @@ import com.StudentManager.StudentManager.Repository.RegistrationRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -39,6 +40,7 @@ public class RegistrationService {
     public RegistrationBaseResponse createRegistration(RegistrationRequest registration) {
         Registration registrationEntity = registrationMapper.toRegistration(registration);
         registrationEntity.setStatus(Status.ACTIVE);
+        registrationEntity.setRegistrationDate(LocalDate.now());
         return registrationMapper.toRegistrationBaseResponse(registrationRepository.save(registrationEntity));
     }
 
