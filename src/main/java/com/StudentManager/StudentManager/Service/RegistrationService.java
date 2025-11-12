@@ -1,5 +1,8 @@
 package com.StudentManager.StudentManager.Service;
 
+import com.StudentManager.StudentManager.DTO.Request.RegistrationRequest;
+import com.StudentManager.StudentManager.DTO.Response.RegistrationBaseResponse;
+import com.StudentManager.StudentManager.Mapper.RegistrationMapper;
 import com.StudentManager.StudentManager.Model.Enum.Status;
 import com.StudentManager.StudentManager.Model.Registration;
 import com.StudentManager.StudentManager.Repository.RegistrationRepository;
@@ -8,22 +11,35 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class RegistrationService {
 
     private final RegistrationRepository registrationRepository;
+    private final RegistrationMapper registrationMapper;
 
-    public RegistrationService(RegistrationRepository registrationRepository) { this.registrationRepository = registrationRepository;}
+    public RegistrationService(RegistrationRepository registrationRepository, RegistrationMapper registrationMapper) {
+        this.registrationRepository = registrationRepository;
+        this.registrationMapper = registrationMapper;
+    }
 
-    public List<Registration> getAllRegistrations(){ return registrationRepository.findAllByStatus(Status.ACTIVE); }
+    public List<RegistrationBaseResponse> getAllRegistrations(){
+        return registrationRepository.findAllByStatus(Status.ACTIVE)
+                .stream()
+                .map(registrationMapper::toRegistrationBaseResponse)
+                .collect(Collectors.toList());
+    }
 
-    public Registration getRegistrationById(UUID id) { return registrationRepository.findById(id).orElseThrow(() -> new RuntimeException("Registration not found")); }
+    public RegistrationBaseResponse getRegistrationById(UUID id) {
+        return registrationMapper.toRegistrationBaseResponse(registrationRepository.findById(id).orElseThrow(() -> new RuntimeException("Registration not found")));
+    }
 
     @Transactional
-    public Registration createRegistration(Registration registration) {
-        registration.setStatus(Status.ACTIVE);
-        return registrationRepository.save(registration);
+    public RegistrationBaseResponse createRegistration(RegistrationRequest registration) {
+        Registration registrationEntity = registrationMapper.toRegistration(registration);
+        registrationEntity.setStatus(Status.ACTIVE);
+        return registrationMapper.toRegistrationBaseResponse(registrationRepository.save(registrationEntity));
     }
 
     public Registration advanceSemester(UUID id) {

@@ -1,6 +1,7 @@
 package com.StudentManager.StudentManager.Controller;
 
-import com.StudentManager.StudentManager.Model.Registration;
+import com.StudentManager.StudentManager.DTO.Request.RegistrationRequest;
+import com.StudentManager.StudentManager.DTO.Response.RegistrationBaseResponse;
 import com.StudentManager.StudentManager.Service.RegistrationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,17 +18,17 @@ public class RegistrationController {
     public RegistrationController(RegistrationService registrationService) { this.registrationService = registrationService; }
 
     @GetMapping
-    public ResponseEntity<List<Registration>> getAllRegistrations() {
+    public ResponseEntity<List<RegistrationBaseResponse>> getAllRegistrations() {
         return ResponseEntity.ok(registrationService.getAllRegistrations());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Registration> getRegistrationById(@PathVariable UUID id) {
+    public ResponseEntity<RegistrationBaseResponse> getRegistrationById(@PathVariable UUID id) {
         return ResponseEntity.ok(registrationService.getRegistrationById(id));
     }
 
     @PostMapping
-    public ResponseEntity<String> createRegistration(@RequestBody Registration registration) {
+    public ResponseEntity<String> createRegistration(@RequestBody RegistrationRequest registration) {
         registrationService.createRegistration(registration);
         return ResponseEntity.status(201).body("Registration created successfully");
     }
