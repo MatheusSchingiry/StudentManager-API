@@ -1,5 +1,8 @@
 package com.StudentManager.StudentManager.Service;
 
+import com.StudentManager.StudentManager.DTO.Request.StudentRequest;
+import com.StudentManager.StudentManager.DTO.Response.StudentBaseResponse;
+import com.StudentManager.StudentManager.Mapper.StudentMapper;
 import com.StudentManager.StudentManager.Model.Enum.Status;
 import com.StudentManager.StudentManager.Model.Student;
 import com.StudentManager.StudentManager.Repository.StudentRepository;
@@ -8,40 +11,49 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class StudentService {
 
     private final StudentRepository studentRepository;
+    private final StudentMapper studentMapper;
 
-    public StudentService(StudentRepository studentRepository) {
+    public StudentService(StudentRepository studentRepository, StudentMapper studentMapper) {
         this.studentRepository = studentRepository;
+        this.studentMapper = studentMapper;
     }
 
-    public List<Student> getAllStudents() {
-        return studentRepository.findAllByStatus(Status.ACTIVE);
+    public List<StudentBaseResponse> getAllStudents() {
+        return studentRepository.findAllByStatus(Status.ACTIVE)
+                .stream()
+                .map(studentMapper::toStudentBaseResponse)
+                .collect(Collectors.toList());
     }
 
-    public Student getStudentById(UUID id) { return studentRepository.findById(id).orElseThrow(() -> new RuntimeException("Student not found"));}
+    public StudentBaseResponse getStudentById(UUID id) {
+        return studentMapper.toStudentBaseResponse(studentRepository.findById(id).orElseThrow(() -> new RuntimeException("Student not found")));
+    }
 
     @Transactional
-    public Student createStudent(Student student) {
-        student.setStatus(Status.ACTIVE);
-        return studentRepository.save(student);
+    public StudentBaseResponse createStudent(StudentRequest student) {
+        Student studentEntity = studentMapper.toStudent(student);
+        studentEntity.setStatus(Status.ACTIVE);
+        return studentMapper.toStudentBaseResponse(studentRepository.save(studentEntity));
     }
 
     @Transactional
-    public Student updateStudent(UUID id, Student student) {
+    public StudentBaseResponse updateStudent(UUID id, StudentRequest student) {
         Student existingStudent = studentRepository.findById(id).orElseThrow(() -> new RuntimeException("Student not found"));
 
-        if(student.getName() != null){ existingStudent.setName(student.getName()); }
-        if(student.getRegisterNumber() != null){ existingStudent.setRegisterNumber(student.getRegisterNumber()); }
-        if(student.getBirthDate() != null){ existingStudent.setBirthDate(student.getBirthDate()); }
-        if(student.getAddress() != null){ existingStudent.setAddress(student.getAddress()); }
-        if(student.getEmail() != null){ existingStudent.setEmail(student.getEmail()); }
-        if(student.getPhoneNumber() != null){ existingStudent.setPhoneNumber(student.getPhoneNumber()); }
+        if(student.name() != null){ existingStudent.setName(student.name()); }
+        if(student.registerNumber() != null){ existingStudent.setRegisterNumber(student.registerNumber()); }
+        if(student.birthDate() != null){ existingStudent.setBirthDate(student.birthDate()); }
+        if(student.address() != null){ existingStudent.setAddress(student.address()); }
+        if(student.email() != null){ existingStudent.setEmail(student.email()); }
+        if(student.phoneNumber() != null){ existingStudent.setPhoneNumber(student.phoneNumber()); }
 
-        return studentRepository.save(existingStudent);
+        return studentMapper.toStudentBaseResponse(studentRepository.save(existingStudent));
     }
 
     @Transactional
