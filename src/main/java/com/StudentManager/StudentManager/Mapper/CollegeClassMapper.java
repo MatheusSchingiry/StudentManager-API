@@ -2,6 +2,7 @@ package com.StudentManager.StudentManager.Mapper;
 
 import com.StudentManager.StudentManager.DTO.Request.CollegeClassRequest;
 import com.StudentManager.StudentManager.DTO.Response.CollegeClassBaseResponse;
+import com.StudentManager.StudentManager.DTO.Response.CollegeClassRegistrationResponse;
 import com.StudentManager.StudentManager.Model.CollegeClass;
 import com.StudentManager.StudentManager.Repository.CourseRepository;
 import com.StudentManager.StudentManager.Repository.UnitRepository;
@@ -32,6 +33,14 @@ public class CollegeClassMapper {
                 .status(collegeClass.getStatus())
                 .createdAt(collegeClass.getCreatedAt())
                 .updatedAt(collegeClass.getUpdatedAt())
+                .build();
+    }
+
+    public CollegeClassRegistrationResponse toCollegeClassRegistrationResponse(CollegeClass collegeClass) {
+        return CollegeClassRegistrationResponse.builder()
+                .period(collegeClass.getPeriod().name())
+                .unitName(collegeClass.getUnit().getName())
+                .courseName(collegeClass.getCourse().getName())
                 .build();
     }
 }
