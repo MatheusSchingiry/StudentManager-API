@@ -31,6 +31,9 @@ public class RegistrationMapper {
                 .registrationDate(registration.getRegistrationDate())
                 .studentName(registration.getStudent().getName())
                 .collegeClass(collegeClassMapper.toCollegeClassRegistrationResponse(registration.getCollegeClass()))
+                .status(registration.getStatus())
+                .createdAt(registration.getCreatedAt())
+                .updatedAt(registration.getUpdatedAt())
                 .build();
     }
 }
