@@ -1,5 +1,8 @@
 package com.StudentManager.StudentManager.Service;
 
+import com.StudentManager.StudentManager.DTO.Request.CollegeClassRequest;
+import com.StudentManager.StudentManager.DTO.Response.CollegeClassBaseResponse;
+import com.StudentManager.StudentManager.Mapper.CollegeClassMapper;
 import com.StudentManager.StudentManager.Model.CollegeClass;
 import com.StudentManager.StudentManager.Model.Enum.Status;
 import com.StudentManager.StudentManager.Repository.CollegeClassRepository;
@@ -8,22 +11,35 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class CollegeClassService {
 
     private final CollegeClassRepository collegeClassRepository;
+    private final CollegeClassMapper collegeClassMapper;
 
-    public CollegeClassService(CollegeClassRepository collegeClassRepository) { this.collegeClassRepository = collegeClassRepository;}
+    public CollegeClassService(CollegeClassRepository collegeClassRepository, CollegeClassMapper collegeClassMapper) {
+        this.collegeClassRepository = collegeClassRepository;
+        this.collegeClassMapper = collegeClassMapper;
+    }
 
-    public List<CollegeClass> getAllCollegeClasses() { return collegeClassRepository.findAllByStatus(Status.ACTIVE);}
+    public List<CollegeClassBaseResponse> getAllCollegeClasses() {
+        return collegeClassRepository.findAllByStatus(Status.ACTIVE)
+                .stream()
+                .map(collegeClassMapper::toCollegeClassBaseResponse)
+                .collect(Collectors.toList());
+    }
 
-    public CollegeClass getCollegeClassById(UUID id) { return collegeClassRepository.findById(id).orElseThrow(() -> new RuntimeException("CollegeClass not found"));}
+    public CollegeClassBaseResponse getCollegeClassById(UUID id) {
+        return collegeClassMapper.toCollegeClassBaseResponse(collegeClassRepository.findById(id).orElseThrow(() -> new RuntimeException("CollegeClass not found")));
+    }
 
     @Transactional
-    public CollegeClass createCollegeClass(CollegeClass collegeClass) {
-        collegeClass.setStatus(Status.ACTIVE);
-        return collegeClassRepository.save(collegeClass);
+    public CollegeClassBaseResponse createCollegeClass(CollegeClassRequest collegeClass) {
+        CollegeClass collegeClassEntity = collegeClassMapper.toCollegeClass(collegeClass);
+        collegeClassEntity.setStatus(Status.ACTIVE);
+        return collegeClassMapper.toCollegeClassBaseResponse(collegeClassRepository.save(collegeClassEntity));
     }
 
     @Transactional
