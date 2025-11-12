@@ -14,7 +14,7 @@ public class StudentMapper {
         return Student.builder()
                 .name(studentRequest.name())
                 .registerNumber(studentRequest.registerNumber())
-                .birthDate(java.time.LocalDate.parse(studentRequest.birthDate()))
+                .birthDate(studentRequest.birthDate())
                 .address(studentRequest.address())
                 .email(studentRequest.email())
                 .phoneNumber(studentRequest.phoneNumber())
