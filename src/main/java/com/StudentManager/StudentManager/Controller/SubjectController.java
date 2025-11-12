@@ -1,6 +1,7 @@
 package com.StudentManager.StudentManager.Controller;
 
-import com.StudentManager.StudentManager.Model.Subject;;
+import com.StudentManager.StudentManager.DTO.Request.SubjectRequest;
+import com.StudentManager.StudentManager.DTO.Response.SubjectBaseResponse;
 import com.StudentManager.StudentManager.Service.SubjectService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,23 +20,23 @@ public class SubjectController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Subject>> getAllSubjects() {
+    public ResponseEntity<List<SubjectBaseResponse>> getAllSubjects() {
         return ResponseEntity.ok(subjectService.getAllSubjects());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Subject> getSubjectById(@PathVariable UUID id) {
+    public ResponseEntity<SubjectBaseResponse> getSubjectById(@PathVariable UUID id) {
         return ResponseEntity.ok(subjectService.getSubjectById(id));
     }
 
     @PostMapping
-    public ResponseEntity<String> createSubject(@RequestBody Subject subject) {
+    public ResponseEntity<String> createSubject(@RequestBody SubjectRequest subject) {
         subjectService.createSubject(subject);
         return ResponseEntity.status(201).body("Subject created successfully");
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateSubject(@PathVariable UUID id, @RequestBody Subject subject) {
+    public ResponseEntity<String> updateSubject(@PathVariable UUID id, @RequestBody SubjectRequest subject) {
         subjectService.updateSubject(id, subject);
         return ResponseEntity.status(200).body("Subject updated successfully");
     }
