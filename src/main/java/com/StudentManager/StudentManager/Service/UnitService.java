@@ -32,6 +32,7 @@ public class UnitService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public UnitBaseResponse getUnitById(UUID id) {
         return unitMapper.toUnitBaseResponse(unitRepository.findById(id).orElseThrow(() -> new RuntimeException("Unit not found")));
     }

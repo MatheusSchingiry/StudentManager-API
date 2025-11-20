@@ -2,6 +2,7 @@ package com.StudentManager.StudentManager.Model;
 
 import com.StudentManager.StudentManager.Model.Base.Address;
 import com.StudentManager.StudentManager.Model.Base.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,12 +26,15 @@ public class Unit extends BaseEntity {
     @Embedded
     private Address address;
 
-    @ManyToMany(mappedBy = "units")
+    @JsonIgnore
+    @ManyToMany(mappedBy = "units", fetch = FetchType.LAZY)
     private Set<Course> courses;
 
-    @ManyToMany(mappedBy = "units")
+    @JsonIgnore
+    @ManyToMany(mappedBy = "units", fetch = FetchType.LAZY)
     private Set<Teacher> teachers;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "unit", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CollegeClass> collegeClasses;
 }

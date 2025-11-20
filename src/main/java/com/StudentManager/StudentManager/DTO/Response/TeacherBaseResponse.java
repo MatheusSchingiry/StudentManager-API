@@ -6,7 +6,7 @@ import lombok.Builder;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 
 @Builder
@@ -19,8 +19,8 @@ public record TeacherBaseResponse(UUID id,
                                   String phoneNumber,
                                   String specialty,
                                   LocalDate hireDate,
-                                  Set<String> unitsNames,
-                                  Set<String> subjectsNames,
+                                  List<String> unitsNames,
+                                  List<String> subjectsNames,
                                   Status status,
                                   LocalDateTime createdAt,
                                   LocalDateTime updatedAt) {

@@ -1,6 +1,7 @@
 package com.StudentManager.StudentManager.Model;
 
 import com.StudentManager.StudentManager.Model.Base.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,9 +32,11 @@ public class Subject extends BaseEntity {
     @Column(nullable = false)
     private Integer creditHours;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "subjects")
     private Set<Course> courses;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "subjects")
     private Set<Teacher> teachers;
 }

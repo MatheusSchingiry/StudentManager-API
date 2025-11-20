@@ -24,6 +24,7 @@ public class CourseService {
         this.courseMapper = courseMapper;
     }
 
+    @Transactional
     public List<CourseBaseResponse> getAllCourses() {
         return courseRepository.findAllByStatus(Status.ACTIVE)
                 .stream()
@@ -31,6 +32,7 @@ public class CourseService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public CourseBaseResponse getCourseById(UUID id) {
         return courseMapper.toCourseBaseResponse(courseRepository.findById(id).orElseThrow(() -> new RuntimeException("Course not found")));
     }

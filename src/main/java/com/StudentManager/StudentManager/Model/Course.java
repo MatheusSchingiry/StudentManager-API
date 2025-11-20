@@ -2,8 +2,11 @@ package com.StudentManager.StudentManager.Model;
 
 import com.StudentManager.StudentManager.Model.Base.BaseEntity;
 import com.StudentManager.StudentManager.Model.Enum.Period;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Cascade;
 
 import java.util.List;
 import java.util.Set;
@@ -36,18 +39,23 @@ public class Course extends BaseEntity {
     @Column(name = "period")
     private Set<Period> periods;
 
+    @JsonManagedReference
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "tb_course_unit",
             joinColumns = @JoinColumn(name = "course_id"),
             inverseJoinColumns = @JoinColumn(name = "unit_id"))
-    private Set<Unit> units;
+    private List<Unit> units;
 
-    @ManyToMany
+    @JsonManagedReference
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "tb_course_subject",
             joinColumns = @JoinColumn(name = "course_id"),
             inverseJoinColumns = @JoinColumn(name = "subject_id"))
-    private Set<Subject> subjects;
+    private List<Subject> subjects;
 
-    @OneToMany(mappedBy = "course")
+    @JsonIgnore
+    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
     private List<CollegeClass> collegeClasses;
 }

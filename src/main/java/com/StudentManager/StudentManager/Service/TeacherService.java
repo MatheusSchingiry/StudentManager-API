@@ -25,6 +25,7 @@ public class TeacherService {
         this.teacherMapper = teacherMapper;
     }
 
+    @Transactional
     public List<TeacherBaseResponse> getAllTeachers() {
         return teacherRepository.findAllByStatus(Status.ACTIVE)
                 .stream()
@@ -32,6 +33,7 @@ public class TeacherService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public TeacherBaseResponse getTeacherById(UUID id) {
         return teacherMapper.toTeacherBaseResponse(teacherRepository.findById(id).orElseThrow(() -> new RuntimeException("Teacher not found")));
     }

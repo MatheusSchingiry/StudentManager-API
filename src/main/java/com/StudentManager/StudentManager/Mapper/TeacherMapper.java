@@ -3,14 +3,18 @@ package com.StudentManager.StudentManager.Mapper;
 import com.StudentManager.StudentManager.DTO.Request.TeacherRequest;
 import com.StudentManager.StudentManager.DTO.Response.TeacherBaseResponse;
 import com.StudentManager.StudentManager.Model.Teacher;
+import com.StudentManager.StudentManager.Repository.TeacherRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
 public class TeacherMapper {
+
+    private final TeacherRepository teacherRepository;
 
     public Teacher toTeacher(TeacherRequest teacherRequest) {
         return Teacher.builder()
@@ -25,6 +29,21 @@ public class TeacherMapper {
     }
 
     public TeacherBaseResponse toTeacherBaseResponse(Teacher teacher) {
+        List<Teacher> unitsAndSubjects = teacherRepository.findUnitsAndSubjectsIdByTeacherId(teacher.getId());
+
+        List<String> unitsNames = unitsAndSubjects.stream()
+                .flatMap(t -> t.getUnits().stream())
+                .map(unit -> unit.getName())
+                .distinct()
+                .collect(Collectors.toList());
+
+        List<String> subjectsNames = unitsAndSubjects.stream()
+                .flatMap(t -> t.getSubjects().stream())
+                .map(subject -> subject.getName())
+                .distinct()
+                .collect(Collectors.toList());
+
+
         return TeacherBaseResponse.builder()
                 .id(teacher.getId())
                 .name(teacher.getName())
@@ -35,8 +54,8 @@ public class TeacherMapper {
                 .phoneNumber(teacher.getPhoneNumber())
                 .specialty(teacher.getSpecialty())
                 .hireDate(teacher.getHireDate())
-                .unitsNames(teacher.getUnits().stream().map(unit -> unit.getName()).collect(Collectors.toSet()))
-                .subjectsNames(teacher.getSubjects().stream().map(subject -> subject.getName()).collect(Collectors.toSet()))
+                .unitsNames(unitsNames)
+                .subjectsNames(subjectsNames)
                 .status(teacher.getStatus())
                 .createdAt(teacher.getCreatedAt())
                 .updatedAt(teacher.getUpdatedAt())
