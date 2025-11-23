@@ -1,53 +1,83 @@
-# Student Manager API
+## Student Manager API
 
 ## Description
 
-**Student Manager** is a RESTful API for managing an educational institution, such as a college or university. The project is in its initial development phase, and its ultimate goal is to implement all the functionalities represented in the entity-relationship diagram, including the management of students, courses, professors, classes, and enrollments.
+**Student Manager** is a RESTful API designed for managing an educational institution, such as a college or university. The project is currently in a strong development phase, aiming to implement all the functionalities represented in the entity-relationship diagram (ERD), which includes the comprehensive management of students, courses, professors, classes, and enrollments.
 
-Currently, the API features a complete CRUD for the **Students** entity.
+-----
 
 ## Current Features
 
-- **Student Management:**
-    - ✔️ Create a new student.
-    - ✔️ Fetch all registered students.
-    - ✔️ Fetch a specific student by email.
-    - ✔️ Fetch a specific student by register number.
-    - ✔️ Edit an existing student's data.
-    - ✔️ Delete a student (soft delete, changing the status to `INACTIVE`).
+The API currently features robust management capabilities (CRUD or partial CRUD) for the following core entities:
+
+  *  **Student Management:** Full CRUD lifecycle including Create, Read All, Read by ID, Update, and **Soft Delete**.
+  *  **Course Management:** Full CRUD lifecycle including Create, Read All, Read by ID, Update, and **Soft Delete**.
+  *  **Teacher Management:** Full CRUD lifecycle including Create, Read All, Read by ID, Update, and **Soft Delete**.
+  *  **Subject Management:** Full CRUD lifecycle including Create, Read All, Read by ID, Update, and **Soft Delete**.
+  *  **Unit Management (Campus):** Full CRUD lifecycle including Create, Read All, Read by ID, Update, and **Soft Delete**.
+  *  **College Class Management:** Includes Create, Read All, Read by ID, and **Soft Delete**.
+  *  **Registration Management:** Includes Create, Read All, Read by ID, **Soft Delete**, and a Service method for **Semester Advancement**.
+
+-----
 
 ## Roadmap (Next Steps)
 
-The goal is to expand the API to include the management of the following entities, as shown in the diagram below:
+The next steps are focused on strengthening the project's technical foundation, improving architecture, and fully implementing advanced academic business rules to complete the system.
 
-- [ ] Courses
-- [ ] Professors
-- [ ] Disciplines
-- [ ] Units (Campus)
-- [ ] Classes (Turmas)
-- [ ] Enrollments (Matrículas)
+### Technical Improvements
 
-## 📊 Entity-Relationship Diagram (ERD)
+These steps are prioritized to enhance the API's scalability, security, and maintainability:
 
-This is the data model that serves as a guide for the project's development:
+  * **Implement Robust Validation:** Integrate Jakarta Bean Validation for all DTOs and enforce unique constraints (e.g., student register numbers and emails) at the service layer.
+  * **Centralized Error Handling:** Implement a Global Exception Handler to treat errors and return consistent, meaningful error responses.
+  * **Architectural Refactoring:** **Remove Repository/Service calls from Mappers** to adhere to layered architecture best practices, potentially implementing **MapStruct** for highly performant and cleaner mapping logic.
+  * **API Security:** Implement **Spring Security** for authentication and authorization across all endpoints.
+  * **Scalable Data Retrieval:** Implement **Pagination (`Pageable`)** on all `GET /all` endpoints to support large datasets.
+  * **API Documentation:** Document the API using **SpringDoc OpenAPI** (Swagger UI) for clear, accessible endpoint specifications.
+  * **Testing Coverage:** Develop comprehensive **Integration and Unit Tests** to ensure code quality and stability.
+  * **Monitoring:** Implement **Spring Boot Actuator** to provide operational monitoring endpoints.
+
+### Business Rules and Core Functionality Expansion
+
+These updates focus on completing the academic data model and business logic:
+
+  * **Academic Data Modeling:** Introduce new entities for **Grades**, **Subject Status** (e.g., `Enrolling`, `Approved`, `Reproved`), and **Attendance/Absences**.
+  * **Registration Status Expansion:** Introduce new statuses for `Registration` (e.g., **LOCKED**, **CONCLUDED**) and implement the necessary business logic, including a global method for **Semester Update**.
+  * **Student Transcript:** Implement a comprehensive feature to return a Student's full **Academic Transcript**, including personal data, all active/inactive registrations, classes, and associated grades.
+  * **Business Rule Enforcement:**
+      * Ensure a Student cannot have duplicate active registrations for the same class.
+      * Validate that **Students and Classes are active** before creating a new `Registration`.
+      * Implement logic to ensure a **Course's workload equals the sum of its linked Subjects' credit hours**.
+      * Enforce the rule that a `CollegeClass` can only be created and remain active if its associated `Unit` and `Course` are also active.
+  * **Auditing:** Implement a mechanism for **Access/Alteration Logs** tied to a `userId` for compliance and tracking changes.
+
+-----
+
+## Entity-Relationship Diagram (ERD)
+
+This data model serves as the architectural guide for the project's development:
 
 ![img.png](img.png)
+
+-----
 
 ## Technologies Used
 
 This project is built using the following technologies:
 
-- **Backend:**
-    - [Java 17](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
-    - [Spring Boot 3](https://spring.io/projects/spring-boot)
-    - [Spring Web](https://docs.spring.io/spring-framework/reference/web/webmvc.html)
-    - [Spring Data JPA](https://www.google.com/search?q=https://spring.io/projects/spring-data-jpa)
-    - [Lombok](https://projectlombok.org/)
-- **Database:**
-    - [PostgreSQL](https://www.postgresql.org/)
-    - [Flyway](https://flywaydb.org/) (for database schema versioning)
-- **Build and Management:**
-    - [Apache Maven](https://maven.apache.org/)
+  * **Backend:**
+      * [Java 17](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
+      * [Spring Boot 3](https://spring.io/projects/spring-boot)
+      * [Spring Web](https://docs.spring.io/spring-framework/reference/web/webmvc.html)
+      * [Spring Data JPA](https://www.google.com/search?q=https://spring.io/projects/spring-data-jpa)
+      * [Lombok](https://projectlombok.org/)
+  * **Database:**
+      * [PostgreSQL](https://www.postgresql.org/)
+      * [Flyway](https://flywaydb.org/) (for database schema versioning)
+  * **Build and Management:**
+      * [Apache Maven](https://maven.apache.org/)
+
+-----
 
 ## How to Run the Project
 
@@ -55,24 +85,24 @@ Follow the steps below to run the application locally.
 
 ### Prerequisites
 
-- **Java Development Kit (JDK) 17** or higher.
-- **Apache Maven** 3.9 or higher.
-- A running instance of **PostgreSQL**.
+  * **Java Development Kit (JDK) 17** or higher.
+  * **Apache Maven** 3.9 or higher.
+  * A running instance of **PostgreSQL**.
 
 ### Steps
 
 1.  **Clone the repository:**
 
     ```bash
-    git clone <YOUR_REPOSITORY_URL>
+    git clone https://github.com/MatheusSchingiry/StudentManager-API.git
     cd StudentManager-API
     ```
 
 2.  **Configure the Database:**
     The application uses environment variables to configure the database connection. You can either:
 
-    - Create a `.env` file in the project root.
-    - Or set the variables directly in your operating system.
+      * Create a `.env` file in the project root.
+      * Or set the variables directly in your operating system.
 
     The `application.properties` file expects the following variables:
 
@@ -97,6 +127,8 @@ Follow the steps below to run the application locally.
 
     The API will be available at `http://localhost:8080`.
 
+-----
+
 ## Project Structure
 
 The project follows a standard structure for Spring Boot applications, dividing responsibilities into packages:
@@ -111,53 +143,76 @@ com.StudentManager.StudentManager
 └── Service/     # Business logic layer
 ```
 
-## API Endpoints
-
-Below are the currently available endpoints for the `/students` entity.
-
 -----
 
-#### `GET /students`
+## API Endpoints
 
-Returns a list of all registered students.
+Below are the currently available endpoints, grouped by entity.
 
-#### `GET /students/email/{email}`
+### Students (`/students`)
 
-Returns a specific student based on their `email`.
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `GET` | `/students` | Returns a list of all active students. |
+| `GET` | `/students/{id}` | Returns a specific student by ID. |
+| `POST` | `/students` | Creates a new student. |
+| `PUT` | `/students/{id}` | Updates an existing student's data. |
+| `DELETE` | `/students/{id}` | Performs a soft delete (sets status to `INACTIVE`). |
 
-#### `GET /students/registerNumber/{registerNumber}`
+### Courses (`/courses`)
 
-Returns a specific student based on their `registerNumber`.
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `GET` | `/courses` | Returns a list of all active courses. |
+| `GET` | `/courses/{id}` | Returns a specific course by ID. |
+| `POST` | `/courses` | Creates a new course. |
+| `PUT` | `/courses/{id}` | Updates an existing course's data. |
+| `DELETE` | `/courses/{id}` | Performs a soft delete (sets status to `INACTIVE`). |
 
-#### `POST /students`
+### Teachers (`/teachers`)
 
-Creates a new student.
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `GET` | `/teachers` | Returns a list of all active teachers. |
+| `GET` | `/teachers/{id}` | Returns a specific teacher by ID. |
+| `POST` | `/teachers` | Creates a new teacher. |
+| `PUT` | `/teachers/{id}` | Updates an existing teacher's data. |
+| `DELETE` | `/teachers/{id}` | Performs a soft delete (sets status to `INACTIVE`). |
 
-- **Body (example):**
-  ```json
-  {
-    "name": "John Doe",
-    "registerNumber": 123456,
-    "address": "123 Flower Street",
-    "birthDate": "2000-01-15",
-    "email": "john.doe@example.com",
-    "phoneNumber": 11987654321,
-    "status": "ACTIVE"
-  }
-  ```
+### Subjects (`/subjects`)
 
-#### `PUT /students/{id}`
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `GET` | `/subjects` | Returns a list of all active subjects. |
+| `GET` | `/subjects/{id}` | Returns a specific subject by ID. |
+| `POST` | `/subjects` | Creates a new subject. |
+| `PUT` | `/subjects/{id}` | Updates an existing subject's data. |
+| `DELETE` | `/subjects/{id}` | Performs a soft delete (sets status to `INACTIVE`). |
 
-Updates an existing student's data.
+### Units (`/units`)
 
-- **Body (example):**
-  ```json
-  {
-    "address": "456 Main Avenue",
-    "phoneNumber": 11999998888
-  }
-  ```
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `GET` | `/units` | Returns a list of all active units (campuses). |
+| `GET` | `/units/{id}` | Returns a specific unit by ID. |
+| `POST` | `/units` | Creates a new unit. |
+| `PUT` | `/units/{id}` | Updates an existing unit's data. |
+| `DELETE` | `/units/{id}` | Performs a soft delete (sets status to `INACTIVE`). |
 
-#### `DELETE /students/{id}`
+### College Classes (`/college-classes`)
 
-Performs a soft delete of a student, changing their status to `INACTIVE`.
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `GET` | `/college-classes` | Returns a list of all active college classes. |
+| `GET` | `/college-classes/{id}` | Returns a specific class by ID. |
+| `POST` | `/college-classes` | Creates a new college class. |
+| `DELETE` | `/college-classes/{id}` | Performs a soft delete (sets status to `INACTIVE`). |
+
+### Registrations (`/registrations`)
+
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `GET` | `/registrations` | Returns a list of all active registrations. |
+| `GET` | `/registrations/{id}` | Returns a specific registration by ID. |
+| `POST` | `/registrations` | Creates a new registration. |
+| `DELETE` | `/registrations/{id}` | Performs a soft delete (sets status to `INACTIVE`). |
