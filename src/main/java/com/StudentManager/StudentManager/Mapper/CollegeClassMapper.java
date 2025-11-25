@@ -4,8 +4,8 @@ import com.StudentManager.StudentManager.DTO.Request.CollegeClassRequest;
 import com.StudentManager.StudentManager.DTO.Response.CollegeClassBaseResponse;
 import com.StudentManager.StudentManager.DTO.Response.CollegeClassRegistrationResponse;
 import com.StudentManager.StudentManager.Model.CollegeClass;
-import com.StudentManager.StudentManager.Repository.CourseRepository;
-import com.StudentManager.StudentManager.Repository.UnitRepository;
+import com.StudentManager.StudentManager.Model.Course;
+import com.StudentManager.StudentManager.Model.Unit;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -13,14 +13,11 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class CollegeClassMapper {
 
-    private final UnitRepository unitRepository;
-    private final CourseRepository courseRepository;
-
-    public CollegeClass toCollegeClass(CollegeClassRequest collegeClassRequest) {
+    public CollegeClass toCollegeClass(CollegeClassRequest collegeClassRequest, Unit unit, Course course) {
         return CollegeClass.builder()
                 .period(collegeClassRequest.period())
-                .unit(unitRepository.findById(collegeClassRequest.unitId()).orElseThrow(() -> new RuntimeException("Unit not found")))
-                .course(courseRepository.findById(collegeClassRequest.course()).orElseThrow(() -> new RuntimeException("Course not found")))
+                .unit(unit)
+                .course(course)
                 .build();
     }
 

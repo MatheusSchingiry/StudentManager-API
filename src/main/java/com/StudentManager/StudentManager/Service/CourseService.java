@@ -5,10 +5,15 @@ import com.StudentManager.StudentManager.DTO.Response.CourseBaseResponse;
 import com.StudentManager.StudentManager.Mapper.CourseMapper;
 import com.StudentManager.StudentManager.Model.Course;
 import com.StudentManager.StudentManager.Model.Enum.Status;
+import com.StudentManager.StudentManager.Model.Subject;
+import com.StudentManager.StudentManager.Model.Unit;
 import com.StudentManager.StudentManager.Repository.CourseRepository;
+import com.StudentManager.StudentManager.Repository.SubjectRepository;
+import com.StudentManager.StudentManager.Repository.UnitRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -17,10 +22,14 @@ import java.util.stream.Collectors;
 public class CourseService {
 
     private final CourseRepository courseRepository;
+    private final SubjectRepository subjectRepository;
+    private final UnitRepository unitRepository;
     private final CourseMapper courseMapper;
 
-    public CourseService(CourseRepository courseRepository, CourseMapper courseMapper) {
+    public CourseService(CourseRepository courseRepository, SubjectRepository subjectRepository, UnitRepository unitRepository, CourseMapper courseMapper) {
         this.courseRepository = courseRepository;
+        this.subjectRepository = subjectRepository;
+        this.unitRepository = unitRepository;
         this.courseMapper = courseMapper;
     }
 
@@ -39,7 +48,15 @@ public class CourseService {
 
     @Transactional
     public CourseBaseResponse createCourse(CourseRequest course) {
-        Course courseEntity = courseMapper.toCourse(course);
+        List<Unit> units = new ArrayList<>();
+
+        for(var id : course.unitId()) {
+            Unit unit = unitRepository.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("Unit not found with id: " + id));
+            units.add(unit);
+        }
+
+        Course courseEntity = courseMapper.toCourse(course, units);
         courseEntity.setStatus(Status.ACTIVE);
         return courseMapper.toCourseBaseResponse(courseRepository.save(courseEntity));
     }
@@ -69,5 +86,17 @@ public class CourseService {
 
         existingCourse.setStatus(Status.INACTIVE);
         courseRepository.save(existingCourse);
+    }
+
+    public void addSubjectToCourse(UUID courseId, UUID subjectId) {
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new RuntimeException("Course not found"));
+
+        Subject subject = subjectRepository.findById(subjectId)
+                .orElseThrow(() -> new RuntimeException("Subject not found"));
+
+        course.getSubjects().add(subject);
+
+        courseRepository.save(course);
     }
 }

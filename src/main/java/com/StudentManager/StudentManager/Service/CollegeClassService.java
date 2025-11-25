@@ -4,8 +4,12 @@ import com.StudentManager.StudentManager.DTO.Request.CollegeClassRequest;
 import com.StudentManager.StudentManager.DTO.Response.CollegeClassBaseResponse;
 import com.StudentManager.StudentManager.Mapper.CollegeClassMapper;
 import com.StudentManager.StudentManager.Model.CollegeClass;
+import com.StudentManager.StudentManager.Model.Course;
 import com.StudentManager.StudentManager.Model.Enum.Status;
+import com.StudentManager.StudentManager.Model.Unit;
 import com.StudentManager.StudentManager.Repository.CollegeClassRepository;
+import com.StudentManager.StudentManager.Repository.CourseRepository;
+import com.StudentManager.StudentManager.Repository.UnitRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -18,10 +22,14 @@ public class CollegeClassService {
 
     private final CollegeClassRepository collegeClassRepository;
     private final CollegeClassMapper collegeClassMapper;
+    private final UnitRepository unitRepository;
+    private final CourseRepository courserRepository;
 
-    public CollegeClassService(CollegeClassRepository collegeClassRepository, CollegeClassMapper collegeClassMapper) {
+    public CollegeClassService(CollegeClassRepository collegeClassRepository, CollegeClassMapper collegeClassMapper, UnitRepository unitRepository, CourseRepository courserRepository) {
         this.collegeClassRepository = collegeClassRepository;
         this.collegeClassMapper = collegeClassMapper;
+        this.unitRepository = unitRepository;
+        this.courserRepository = courserRepository;
     }
 
     public List<CollegeClassBaseResponse> getAllCollegeClasses() {
@@ -37,7 +45,13 @@ public class CollegeClassService {
 
     @Transactional
     public CollegeClassBaseResponse createCollegeClass(CollegeClassRequest collegeClass) {
-        CollegeClass collegeClassEntity = collegeClassMapper.toCollegeClass(collegeClass);
+        Unit unit = unitRepository.findById(collegeClass.unitId())
+                .orElseThrow(() -> new RuntimeException("Unit not found"));
+
+        Course course = courserRepository.findById(collegeClass.course())
+                .orElseThrow(() -> new RuntimeException("Course not found"));
+
+        CollegeClass collegeClassEntity = collegeClassMapper.toCollegeClass(collegeClass, unit, course);
         collegeClassEntity.setStatus(Status.ACTIVE);
         return collegeClassMapper.toCollegeClassBaseResponse(collegeClassRepository.save(collegeClassEntity));
     }

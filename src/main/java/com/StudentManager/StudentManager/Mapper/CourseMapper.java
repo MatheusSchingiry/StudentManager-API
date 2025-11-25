@@ -5,7 +5,6 @@ import com.StudentManager.StudentManager.DTO.Response.CourseBaseResponse;
 import com.StudentManager.StudentManager.Model.Course;
 import com.StudentManager.StudentManager.Model.Unit;
 import com.StudentManager.StudentManager.Repository.CourseRepository;
-import com.StudentManager.StudentManager.Repository.UnitRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -18,18 +17,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CourseMapper {
 
-    private final UnitRepository unitRepository;
     private final CourseRepository courseRepository;
 
-    public Course toCourse(CourseRequest courseRequest) {
-        List<Unit> units = new ArrayList<>();
-
-        for(var id : courseRequest.unitId()) {
-            Unit unit = unitRepository.findById(id)
-                    .orElseThrow(() -> new IllegalArgumentException("Unit not found with id: " + id));
-            units.add(unit);
-        }
-
+    public Course toCourse(CourseRequest courseRequest, List<Unit> units) {
         return Course.builder()
                 .name(courseRequest.name())
                 .description(courseRequest.description())
