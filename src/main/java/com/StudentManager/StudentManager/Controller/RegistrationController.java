@@ -3,6 +3,7 @@ package com.StudentManager.StudentManager.Controller;
 import com.StudentManager.StudentManager.DTO.Request.RegistrationRequest;
 import com.StudentManager.StudentManager.DTO.Response.RegistrationBaseResponse;
 import com.StudentManager.StudentManager.Service.RegistrationService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,7 +29,7 @@ public class RegistrationController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createRegistration(@RequestBody RegistrationRequest registration) {
+    public ResponseEntity<String> createRegistration(@RequestBody @Valid RegistrationRequest registration) {
         registrationService.createRegistration(registration);
         return ResponseEntity.status(201).body("Registration created successfully");
     }

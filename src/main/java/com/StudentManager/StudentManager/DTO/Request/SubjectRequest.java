@@ -1,6 +1,9 @@
 package com.StudentManager.StudentManager.DTO.Request;
 
-public record SubjectRequest(String name,
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
+public record SubjectRequest(@NotBlank(message = "Name is mandatory.") String name,
                              String description,
-                             Integer creditHours) {
+                             @NotNull(message = "Credit hours is required.") Integer creditHours) {
 }

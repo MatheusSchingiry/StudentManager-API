@@ -1,8 +1,10 @@
 package com.StudentManager.StudentManager.Controller;
 
+import com.StudentManager.StudentManager.DTO.Request.EditTeacherRequest;
 import com.StudentManager.StudentManager.DTO.Request.TeacherRequest;
 import com.StudentManager.StudentManager.DTO.Response.TeacherBaseResponse;
 import com.StudentManager.StudentManager.Service.TeacherService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,13 +30,13 @@ public class TeacherController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createTeacher(@RequestBody TeacherRequest teacher) {
+    public ResponseEntity<String> createTeacher(@RequestBody @Valid TeacherRequest teacher) {
         teacherService.createTeacher(teacher);
         return ResponseEntity.status(201).body("Teacher created successfully");
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateTeacher(@PathVariable UUID id, @RequestBody TeacherRequest teacher) {
+    public ResponseEntity<String> updateTeacher(@PathVariable UUID id, @RequestBody @Valid EditTeacherRequest teacher) {
         teacherService.updateTeacher(id, teacher);
         return ResponseEntity.status(200).body("Teacher updated successfully");
     }

@@ -3,6 +3,7 @@ package com.StudentManager.StudentManager.Controller;
 import com.StudentManager.StudentManager.DTO.Request.CollegeClassRequest;
 import com.StudentManager.StudentManager.DTO.Response.CollegeClassBaseResponse;
 import com.StudentManager.StudentManager.Service.CollegeClassService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,7 +29,7 @@ public class CollegeClassController {
     }
 
     @PostMapping()
-    public ResponseEntity<String> createCollegeClass(@RequestBody CollegeClassRequest collegeClass) {
+    public ResponseEntity<String> createCollegeClass(@RequestBody @Valid CollegeClassRequest collegeClass) {
         collegeClassService.createCollegeClass(collegeClass);
         return ResponseEntity.status(201).body("College class created successfully");
     }

@@ -1,5 +1,6 @@
 package com.StudentManager.StudentManager.Service;
 
+import com.StudentManager.StudentManager.DTO.Request.EditTeacherRequest;
 import com.StudentManager.StudentManager.DTO.Request.TeacherRequest;
 import com.StudentManager.StudentManager.DTO.Response.TeacherBaseResponse;
 import com.StudentManager.StudentManager.Mapper.TeacherMapper;
@@ -41,23 +42,38 @@ public class TeacherService {
     @Transactional
     public TeacherBaseResponse createTeacher(TeacherRequest teacher) {
         Teacher teacherEntity = teacherMapper.toTeacher(teacher);
+
+        if(emailVerification(teacherEntity.getEmail())) {
+            throw new RuntimeException("Email already exists");
+        }
+        if(registrationNumberVerification(teacherEntity.getRegisterNumber())) {
+            throw new RuntimeException("Register Number already exists");
+        }
+
         teacherEntity.setStatus(Status.ACTIVE);
         teacherEntity.setHireDate(LocalDate.now());
         return teacherMapper.toTeacherBaseResponse(teacherRepository.save(teacherEntity));
     }
 
     @Transactional
-    public TeacherBaseResponse updateTeacher(UUID id, TeacherRequest teacherDetail) {
-        Teacher teacher = teacherRepository.findById(id).orElseThrow(() -> new RuntimeException("Teacher not found"));
+    public TeacherBaseResponse updateTeacher(UUID id, EditTeacherRequest teacher) {
+        Teacher existingTeacher = teacherRepository.findById(id).orElseThrow(() -> new RuntimeException("Teacher not found"));
 
-        if(teacherDetail.name() != null) { teacher.setName(teacherDetail.name());}
-        if(teacherDetail.registerNumber() != null) { teacher.setRegisterNumber(teacherDetail.registerNumber());}
-        if(teacherDetail.birthDate() != null) { teacher.setBirthDate(teacherDetail.birthDate());}
-        if(teacherDetail.email() != null) { teacher.setEmail(teacherDetail.email());}
-        if(teacherDetail.phoneNumber() != null) { teacher.setPhoneNumber(teacherDetail.phoneNumber());}
-        if(teacherDetail.specialty() != null) { teacher.setSpecialty(teacherDetail.specialty());}
+        if(emailVerification(existingTeacher.getEmail()) && existingTeacher.getEmail().equals(teacher.email())) {
+            throw new RuntimeException("Email already exists");
+        }
+        if(registrationNumberVerification(existingTeacher.getRegisterNumber()) && existingTeacher.getRegisterNumber().equals(teacher.registerNumber())) {
+            throw new RuntimeException("Register Number already exists");
+        }
 
-        return teacherMapper.toTeacherBaseResponse(teacherRepository.save(teacher));
+        if(teacher.name() != null) { existingTeacher.setName(teacher.name());}
+        if(teacher.registerNumber() != null) { existingTeacher.setRegisterNumber(teacher.registerNumber());}
+        if(teacher.birthDate() != null) { existingTeacher.setBirthDate(teacher.birthDate());}
+        if(teacher.email() != null) { existingTeacher.setEmail(teacher.email());}
+        if(teacher.phoneNumber() != null) { existingTeacher.setPhoneNumber(teacher.phoneNumber());}
+        if(teacher.specialty() != null) { existingTeacher.setSpecialty(teacher.specialty());}
+
+        return teacherMapper.toTeacherBaseResponse(teacherRepository.save(existingTeacher));
     }
 
     @Transactional
@@ -66,5 +82,15 @@ public class TeacherService {
 
         existingTeacher.setStatus(Status.INACTIVE);
         teacherRepository.save(existingTeacher);
+    }
+
+    public boolean emailVerification(String email) {
+        boolean exists = teacherRepository.existsByEmail(email);
+        return exists;
+    }
+
+    public  boolean registrationNumberVerification(String registerNumber) {
+        boolean exists = teacherRepository.existsByRegisterNumber(registerNumber);
+        return exists;
     }
 }

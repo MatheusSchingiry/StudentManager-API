@@ -11,4 +11,6 @@ import java.util.UUID;
 @Repository
 public interface StudentRepository extends JpaRepository<Student, UUID> {
     List<Student> findAllByStatus(Status status);
+    Boolean existsByEmail(String email);
+    Boolean existsByRegisterNumber(String registerNumber);
 }

@@ -3,6 +3,7 @@ package com.StudentManager.StudentManager.Controller;
 import com.StudentManager.StudentManager.DTO.Request.UnitRequest;
 import com.StudentManager.StudentManager.DTO.Response.UnitBaseResponse;
 import com.StudentManager.StudentManager.Service.UnitService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,13 +29,13 @@ public class UnitController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createUnit(@RequestBody UnitRequest unit) {
+    public ResponseEntity<String> createUnit(@RequestBody @Valid UnitRequest unit) {
         unitService.createUnit(unit);
         return ResponseEntity.status(201).body("Unit created successfully");
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateUnit(@PathVariable UUID id, @RequestBody UnitRequest unit) {
+    public ResponseEntity<String> updateUnit(@PathVariable UUID id, @RequestBody @Valid UnitRequest unit) {
         unitService.updateUnit(id, unit);
         return ResponseEntity.status(200).body("Unit updated successfully");
     }

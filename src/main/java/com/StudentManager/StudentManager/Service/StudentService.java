@@ -1,5 +1,6 @@
 package com.StudentManager.StudentManager.Service;
 
+import com.StudentManager.StudentManager.DTO.Request.EditStudentRequest;
 import com.StudentManager.StudentManager.DTO.Request.StudentRequest;
 import com.StudentManager.StudentManager.DTO.Response.StudentBaseResponse;
 import com.StudentManager.StudentManager.Mapper.StudentMapper;
@@ -38,13 +39,28 @@ public class StudentService {
     @Transactional
     public StudentBaseResponse createStudent(StudentRequest student) {
         Student studentEntity = studentMapper.toStudent(student);
+
+        if(emailVerification(studentEntity.getEmail())) {
+            throw new RuntimeException("Email already exists");
+        }
+        if(registrationNumberVerification(studentEntity.getRegisterNumber())) {
+            throw new RuntimeException("Register Number already exists");
+        }
+
         studentEntity.setStatus(Status.ACTIVE);
         return studentMapper.toStudentBaseResponse(studentRepository.save(studentEntity));
     }
 
     @Transactional
-    public StudentBaseResponse updateStudent(UUID id, StudentRequest student) {
+    public StudentBaseResponse updateStudent(UUID id, EditStudentRequest student) {
         Student existingStudent = studentRepository.findById(id).orElseThrow(() -> new RuntimeException("Student not found"));
+
+        if(emailVerification(existingStudent.getEmail()) && existingStudent.getEmail().equals(student.email())) {
+            throw new RuntimeException("Email already exists");
+        }
+        if(registrationNumberVerification(existingStudent.getRegisterNumber()) && existingStudent.getRegisterNumber().equals(student.registerNumber())) {
+            throw new RuntimeException("Register Number already exists");
+        }
 
         if(student.name() != null){ existingStudent.setName(student.name()); }
         if(student.registerNumber() != null){ existingStudent.setRegisterNumber(student.registerNumber()); }
@@ -70,5 +86,15 @@ public class StudentService {
 
         student.setStatus(Status.INACTIVE);
         studentRepository.save(student);
+    }
+
+    public boolean emailVerification(String email) {
+        boolean exists = studentRepository.existsByEmail(email);
+        return exists;
+    }
+
+    public  boolean registrationNumberVerification(String registerNumber) {
+        boolean exists = studentRepository.existsByRegisterNumber(registerNumber);
+        return exists;
     }
 }

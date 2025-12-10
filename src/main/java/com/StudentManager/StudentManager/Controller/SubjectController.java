@@ -3,6 +3,7 @@ package com.StudentManager.StudentManager.Controller;
 import com.StudentManager.StudentManager.DTO.Request.SubjectRequest;
 import com.StudentManager.StudentManager.DTO.Response.SubjectBaseResponse;
 import com.StudentManager.StudentManager.Service.SubjectService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,13 +31,13 @@ public class SubjectController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createSubject(@RequestBody SubjectRequest subject) {
+    public ResponseEntity<String> createSubject(@RequestBody @Valid SubjectRequest subject) {
         subjectService.createSubject(subject);
         return ResponseEntity.status(201).body("Subject created successfully");
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateSubject(@PathVariable UUID id, @RequestBody SubjectRequest subject) {
+    public ResponseEntity<String> updateSubject(@PathVariable UUID id, @RequestBody @Valid SubjectRequest subject) {
         subjectService.updateSubject(id, subject);
         return ResponseEntity.status(200).body("Subject updated successfully");
     }
