@@ -4,10 +4,12 @@ import com.StudentManager.StudentManager.DTO.Request.CourseRequest;
 import com.StudentManager.StudentManager.DTO.Response.CourseBaseResponse;
 import com.StudentManager.StudentManager.Service.CourseService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -21,8 +23,8 @@ public class CourseController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CourseBaseResponse>> getAllCourses() {
-        return ResponseEntity.ok(courseService.getAllCourses());
+    public ResponseEntity<Page<CourseBaseResponse>> getAllCourses(@PageableDefault(size = 10) Pageable pageable) {
+        return ResponseEntity.ok(courseService.getAllCourses(pageable));
     }
 
     @GetMapping("/{id}")

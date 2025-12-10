@@ -13,11 +13,11 @@ import com.StudentManager.StudentManager.Repository.CollegeClassRepository;
 import com.StudentManager.StudentManager.Repository.CourseRepository;
 import com.StudentManager.StudentManager.Repository.UnitRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class CollegeClassService {
@@ -34,11 +34,9 @@ public class CollegeClassService {
         this.courserRepository = courserRepository;
     }
 
-    public List<CollegeClassBaseResponse> getAllCollegeClasses() {
-        return collegeClassRepository.findAllByStatus(Status.ACTIVE)
-                .stream()
-                .map(collegeClassMapper::toCollegeClassBaseResponse)
-                .collect(Collectors.toList());
+    public Page<CollegeClassBaseResponse> getAllCollegeClasses(Pageable pageable) {
+        return collegeClassRepository.findAllByStatus(Status.ACTIVE, pageable)
+                .map(collegeClassMapper::toCollegeClassBaseResponse);
     }
 
     public CollegeClassBaseResponse getCollegeClassById(UUID id) {

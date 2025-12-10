@@ -13,12 +13,13 @@ import com.StudentManager.StudentManager.Repository.CourseRepository;
 import com.StudentManager.StudentManager.Repository.SubjectRepository;
 import com.StudentManager.StudentManager.Repository.UnitRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class CourseService {
@@ -36,11 +37,9 @@ public class CourseService {
     }
 
     @Transactional
-    public List<CourseBaseResponse> getAllCourses() {
-        return courseRepository.findAllByStatus(Status.ACTIVE)
-                .stream()
-                .map(courseMapper::toCourseBaseResponse)
-                .collect(Collectors.toList());
+    public Page<CourseBaseResponse> getAllCourses(Pageable pageable) {
+        return courseRepository.findAllByStatus(Status.ACTIVE, pageable)
+                .map(courseMapper::toCourseBaseResponse);
     }
 
     @Transactional

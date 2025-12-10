@@ -8,11 +8,11 @@ import com.StudentManager.StudentManager.Model.Enum.Status;
 import com.StudentManager.StudentManager.Model.Subject;
 import com.StudentManager.StudentManager.Repository.SubjectRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class SubjectService {
@@ -25,11 +25,9 @@ public class SubjectService {
         this.subjectMapper = subjectMapper;
     }
 
-    public List<SubjectBaseResponse> getAllSubjects() {
-        return subjectRepository.findAllByStatus(Status.ACTIVE)
-                .stream()
-                .map(subjectMapper::toSubjectBaseResponse)
-                .collect(Collectors.toList());
+    public Page<SubjectBaseResponse> getAllSubjects(Pageable pageable) {
+        return subjectRepository.findAllByStatus(Status.ACTIVE, pageable)
+                .map(subjectMapper::toSubjectBaseResponse);
     }
 
     public SubjectBaseResponse getSubjectById(UUID id) {

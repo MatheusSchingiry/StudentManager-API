@@ -5,10 +5,12 @@ import com.StudentManager.StudentManager.DTO.Request.TeacherRequest;
 import com.StudentManager.StudentManager.DTO.Response.TeacherBaseResponse;
 import com.StudentManager.StudentManager.Service.TeacherService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -20,8 +22,8 @@ public class TeacherController {
     public TeacherController(TeacherService teacherService) { this.teacherService = teacherService;}
 
     @GetMapping
-    public ResponseEntity<List<TeacherBaseResponse>> getAllTeachers() {
-        return ResponseEntity.ok(teacherService.getAllTeachers());
+    public ResponseEntity<Page<TeacherBaseResponse>> getAllTeachers(@PageableDefault(size = 10) Pageable pageable) {
+        return ResponseEntity.ok(teacherService.getAllTeachers(pageable));
     }
 
     @GetMapping("/{id}")

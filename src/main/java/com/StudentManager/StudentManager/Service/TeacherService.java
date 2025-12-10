@@ -10,12 +10,12 @@ import com.StudentManager.StudentManager.Model.Enum.Status;
 import com.StudentManager.StudentManager.Model.Teacher;
 import com.StudentManager.StudentManager.Repository.TeacherRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class TeacherService {
@@ -29,11 +29,9 @@ public class TeacherService {
     }
 
     @Transactional
-    public List<TeacherBaseResponse> getAllTeachers() {
-        return teacherRepository.findAllByStatus(Status.ACTIVE)
-                .stream()
-                .map(teacherMapper::toTeacherBaseResponse)
-                .collect(Collectors.toList());
+    public Page<TeacherBaseResponse> getAllTeachers(Pageable pageable) {
+        return teacherRepository.findAllByStatus(Status.ACTIVE, pageable)
+                .map(teacherMapper::toTeacherBaseResponse);
     }
 
     @Transactional

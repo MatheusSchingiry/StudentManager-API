@@ -4,10 +4,12 @@ import com.StudentManager.StudentManager.DTO.Request.RegistrationRequest;
 import com.StudentManager.StudentManager.DTO.Response.RegistrationBaseResponse;
 import com.StudentManager.StudentManager.Service.RegistrationService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -19,8 +21,8 @@ public class RegistrationController {
     public RegistrationController(RegistrationService registrationService) { this.registrationService = registrationService; }
 
     @GetMapping
-    public ResponseEntity<List<RegistrationBaseResponse>> getAllRegistrations() {
-        return ResponseEntity.ok(registrationService.getAllRegistrations());
+    public ResponseEntity<Page<RegistrationBaseResponse>> getAllRegistrations(@PageableDefault(size = 10) Pageable pageable) {
+        return ResponseEntity.ok(registrationService.getAllRegistrations(pageable));
     }
 
     @GetMapping("/{id}")

@@ -4,10 +4,12 @@ import com.StudentManager.StudentManager.DTO.Request.UnitRequest;
 import com.StudentManager.StudentManager.DTO.Response.UnitBaseResponse;
 import com.StudentManager.StudentManager.Service.UnitService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -19,8 +21,8 @@ public class UnitController {
     public UnitController(UnitService unitService) { this.unitService = unitService; }
 
     @GetMapping
-    public ResponseEntity<List<UnitBaseResponse>> getAllUnits() {
-        return ResponseEntity.ok(unitService.getAllUnits());
+    public ResponseEntity<Page<UnitBaseResponse>> getAllUnits(@PageableDefault(size = 10) Pageable pageable) {
+        return ResponseEntity.ok(unitService.getAllUnits(pageable));
     }
 
     @GetMapping("/{id}")

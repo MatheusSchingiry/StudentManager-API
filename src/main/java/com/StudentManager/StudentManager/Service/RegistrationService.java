@@ -12,12 +12,12 @@ import com.StudentManager.StudentManager.Repository.CollegeClassRepository;
 import com.StudentManager.StudentManager.Repository.RegistrationRepository;
 import com.StudentManager.StudentManager.Repository.StudentRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class RegistrationService {
@@ -34,11 +34,9 @@ public class RegistrationService {
         this.registrationMapper = registrationMapper;
     }
 
-    public List<RegistrationBaseResponse> getAllRegistrations(){
-        return registrationRepository.findAllByStatus(Status.ACTIVE)
-                .stream()
-                .map(registrationMapper::toRegistrationBaseResponse)
-                .collect(Collectors.toList());
+    public Page<RegistrationBaseResponse> getAllRegistrations(Pageable pageable){
+        return registrationRepository.findAllByStatus(Status.ACTIVE, pageable)
+                .map(registrationMapper::toRegistrationBaseResponse);
     }
 
     public RegistrationBaseResponse getRegistrationById(UUID id) {

@@ -9,11 +9,11 @@ import com.StudentManager.StudentManager.Model.Enum.Status;
 import com.StudentManager.StudentManager.Model.Unit;
 import com.StudentManager.StudentManager.Repository.UnitRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class UnitService {
@@ -27,11 +27,9 @@ public class UnitService {
     }
 
     @Transactional
-    public List<UnitBaseResponse> getAllUnits() {
-        return unitRepository.findAllByStatus(Status.ACTIVE)
-                .stream()
-                .map(unitMapper::toUnitBaseResponse)
-                .collect(Collectors.toList());
+    public Page<UnitBaseResponse> getAllUnits(Pageable pageable) {
+        return unitRepository.findAllByStatus(Status.ACTIVE, pageable)
+                .map(unitMapper::toUnitBaseResponse);
     }
 
     @Transactional
