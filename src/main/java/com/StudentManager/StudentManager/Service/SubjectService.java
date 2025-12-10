@@ -2,6 +2,7 @@ package com.StudentManager.StudentManager.Service;
 
 import com.StudentManager.StudentManager.DTO.Request.SubjectRequest;
 import com.StudentManager.StudentManager.DTO.Response.SubjectBaseResponse;
+import com.StudentManager.StudentManager.Exception.NotFoundException;
 import com.StudentManager.StudentManager.Mapper.SubjectMapper;
 import com.StudentManager.StudentManager.Model.Enum.Status;
 import com.StudentManager.StudentManager.Model.Subject;
@@ -32,7 +33,7 @@ public class SubjectService {
     }
 
     public SubjectBaseResponse getSubjectById(UUID id) {
-        return subjectMapper.toSubjectBaseResponse(subjectRepository.findById(id).orElseThrow(() -> new RuntimeException("Subject not found")));
+        return subjectMapper.toSubjectBaseResponse(subjectRepository.findById(id).orElseThrow(() -> new NotFoundException("Subject not found")));
     }
 
     @Transactional
@@ -44,7 +45,7 @@ public class SubjectService {
 
     @Transactional
     public SubjectBaseResponse updateSubject(UUID id, SubjectRequest subjectDetail) {
-        Subject subject = subjectRepository.findById(id).orElseThrow(() -> new RuntimeException("Subject not found"));
+        Subject subject = subjectRepository.findById(id).orElseThrow(() -> new NotFoundException("Subject not found"));
 
         if(subjectDetail.name() != null) { subject.setName(subjectDetail.name());}
         if(subjectDetail.description() != null) { subject.setDescription(subjectDetail.description());}
@@ -55,7 +56,7 @@ public class SubjectService {
 
     @Transactional
     public void deleteSubject(UUID id) {
-        Subject existingSubject = subjectRepository.findById(id).orElseThrow(() -> new RuntimeException("Subject not found"));
+        Subject existingSubject = subjectRepository.findById(id).orElseThrow(() -> new NotFoundException("Subject not found"));
 
         existingSubject.setStatus(Status.INACTIVE);
         subjectRepository.save(existingSubject);

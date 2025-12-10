@@ -3,6 +3,8 @@ package com.StudentManager.StudentManager.Service;
 import com.StudentManager.StudentManager.DTO.Request.EditStudentRequest;
 import com.StudentManager.StudentManager.DTO.Request.StudentRequest;
 import com.StudentManager.StudentManager.DTO.Response.StudentBaseResponse;
+import com.StudentManager.StudentManager.Exception.ConflictException;
+import com.StudentManager.StudentManager.Exception.NotFoundException;
 import com.StudentManager.StudentManager.Mapper.StudentMapper;
 import com.StudentManager.StudentManager.Model.Enum.Status;
 import com.StudentManager.StudentManager.Model.Student;
@@ -33,7 +35,7 @@ public class StudentService {
     }
 
     public StudentBaseResponse getStudentById(UUID id) {
-        return studentMapper.toStudentBaseResponse(studentRepository.findById(id).orElseThrow(() -> new RuntimeException("Student not found")));
+        return studentMapper.toStudentBaseResponse(studentRepository.findById(id).orElseThrow(() -> new NotFoundException("Student not found")));
     }
 
     @Transactional
@@ -41,10 +43,10 @@ public class StudentService {
         Student studentEntity = studentMapper.toStudent(student);
 
         if(emailVerification(studentEntity.getEmail())) {
-            throw new RuntimeException("Email already exists");
+            throw new ConflictException("Email already exists");
         }
         if(registrationNumberVerification(studentEntity.getRegisterNumber())) {
-            throw new RuntimeException("Register Number already exists");
+            throw new ConflictException("Register Number already exists");
         }
 
         studentEntity.setStatus(Status.ACTIVE);
@@ -53,13 +55,13 @@ public class StudentService {
 
     @Transactional
     public StudentBaseResponse updateStudent(UUID id, EditStudentRequest student) {
-        Student existingStudent = studentRepository.findById(id).orElseThrow(() -> new RuntimeException("Student not found"));
+        Student existingStudent = studentRepository.findById(id).orElseThrow(() -> new NotFoundException("Student not found"));
 
         if(emailVerification(existingStudent.getEmail()) && existingStudent.getEmail().equals(student.email())) {
-            throw new RuntimeException("Email already exists");
+            throw new ConflictException("Email already exists");
         }
         if(registrationNumberVerification(existingStudent.getRegisterNumber()) && existingStudent.getRegisterNumber().equals(student.registerNumber())) {
-            throw new RuntimeException("Register Number already exists");
+            throw new ConflictException("Register Number already exists");
         }
 
         if(student.name() != null){ existingStudent.setName(student.name()); }
@@ -74,14 +76,14 @@ public class StudentService {
 
     @Transactional
     public void deleteStudent(UUID id) {
-        Student student = studentRepository.findById(id).orElseThrow(() -> new RuntimeException("Student not found"));
+        Student student = studentRepository.findById(id).orElseThrow(() -> new NotFoundException("Student not found"));
 
         boolean hasActiveRegistrations = student.getRegistrations()
                 .stream()
                 .anyMatch(registration -> registration.getStatus() == Status.ACTIVE);
 
         if (hasActiveRegistrations) {
-            throw new RuntimeException("Cannot delete student with active registrations");
+            throw new ConflictException("Cannot delete student with active registrations");
         }
 
         student.setStatus(Status.INACTIVE);

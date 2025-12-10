@@ -2,6 +2,8 @@ package com.StudentManager.StudentManager.Service;
 
 import com.StudentManager.StudentManager.DTO.Request.UnitRequest;
 import com.StudentManager.StudentManager.DTO.Response.UnitBaseResponse;
+import com.StudentManager.StudentManager.Exception.ConflictException;
+import com.StudentManager.StudentManager.Exception.NotFoundException;
 import com.StudentManager.StudentManager.Mapper.UnitMapper;
 import com.StudentManager.StudentManager.Model.Enum.Status;
 import com.StudentManager.StudentManager.Model.Unit;
@@ -34,7 +36,7 @@ public class UnitService {
 
     @Transactional
     public UnitBaseResponse getUnitById(UUID id) {
-        return unitMapper.toUnitBaseResponse(unitRepository.findById(id).orElseThrow(() -> new RuntimeException("Unit not found")));
+        return unitMapper.toUnitBaseResponse(unitRepository.findById(id).orElseThrow(() -> new NotFoundException("Unit not found")));
     }
 
     @Transactional
@@ -46,7 +48,7 @@ public class UnitService {
 
     @Transactional
     public UnitBaseResponse updateUnit(UUID id, UnitRequest unit){
-        Unit existingUnit = unitRepository.findById(id).orElseThrow(() -> new RuntimeException("Unit not found"));
+        Unit existingUnit = unitRepository.findById(id).orElseThrow(() -> new NotFoundException("Unit not found"));
 
         if(unit.name() != null) { existingUnit.setName(unit.name());}
         if(unit.address() != null) { existingUnit.setAddress(unit.address());}
@@ -56,14 +58,14 @@ public class UnitService {
 
     @Transactional
     public void deleteUnit(UUID id){
-        Unit existingUnit = unitRepository.findById(id).orElseThrow(() -> new RuntimeException("Unit not found"));
+        Unit existingUnit = unitRepository.findById(id).orElseThrow(() -> new NotFoundException("Unit not found"));
 
         boolean hasActiveCourses = existingUnit.getCourses()
                 .stream()
                 .anyMatch(course -> course.getStatus() == Status.ACTIVE);
 
         if (hasActiveCourses) {
-            throw new RuntimeException("Cannot delete Unit with active Courses");
+            throw new ConflictException("Cannot delete Unit with active Courses");
         }
 
         existingUnit.setStatus(Status.INACTIVE);

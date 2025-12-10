@@ -3,6 +3,8 @@ package com.StudentManager.StudentManager.Service;
 import com.StudentManager.StudentManager.DTO.Request.EditTeacherRequest;
 import com.StudentManager.StudentManager.DTO.Request.TeacherRequest;
 import com.StudentManager.StudentManager.DTO.Response.TeacherBaseResponse;
+import com.StudentManager.StudentManager.Exception.ConflictException;
+import com.StudentManager.StudentManager.Exception.NotFoundException;
 import com.StudentManager.StudentManager.Mapper.TeacherMapper;
 import com.StudentManager.StudentManager.Model.Enum.Status;
 import com.StudentManager.StudentManager.Model.Teacher;
@@ -36,7 +38,7 @@ public class TeacherService {
 
     @Transactional
     public TeacherBaseResponse getTeacherById(UUID id) {
-        return teacherMapper.toTeacherBaseResponse(teacherRepository.findById(id).orElseThrow(() -> new RuntimeException("Teacher not found")));
+        return teacherMapper.toTeacherBaseResponse(teacherRepository.findById(id).orElseThrow(() -> new NotFoundException("Teacher not found")));
     }
 
     @Transactional
@@ -44,10 +46,10 @@ public class TeacherService {
         Teacher teacherEntity = teacherMapper.toTeacher(teacher);
 
         if(emailVerification(teacherEntity.getEmail())) {
-            throw new RuntimeException("Email already exists");
+            throw new ConflictException("Email already exists");
         }
         if(registrationNumberVerification(teacherEntity.getRegisterNumber())) {
-            throw new RuntimeException("Register Number already exists");
+            throw new ConflictException("Register Number already exists");
         }
 
         teacherEntity.setStatus(Status.ACTIVE);
@@ -57,13 +59,13 @@ public class TeacherService {
 
     @Transactional
     public TeacherBaseResponse updateTeacher(UUID id, EditTeacherRequest teacher) {
-        Teacher existingTeacher = teacherRepository.findById(id).orElseThrow(() -> new RuntimeException("Teacher not found"));
+        Teacher existingTeacher = teacherRepository.findById(id).orElseThrow(() -> new NotFoundException("Teacher not found"));
 
         if(emailVerification(existingTeacher.getEmail()) && existingTeacher.getEmail().equals(teacher.email())) {
-            throw new RuntimeException("Email already exists");
+            throw new ConflictException("Email already exists");
         }
         if(registrationNumberVerification(existingTeacher.getRegisterNumber()) && existingTeacher.getRegisterNumber().equals(teacher.registerNumber())) {
-            throw new RuntimeException("Register Number already exists");
+            throw new ConflictException("Register Number already exists");
         }
 
         if(teacher.name() != null) { existingTeacher.setName(teacher.name());}
@@ -78,7 +80,7 @@ public class TeacherService {
 
     @Transactional
     public void deleteTeacher(UUID id) {
-        Teacher existingTeacher = teacherRepository.findById(id).orElseThrow(() -> new RuntimeException("Teacher not found"));
+        Teacher existingTeacher = teacherRepository.findById(id).orElseThrow(() -> new NotFoundException("Teacher not found"));
 
         existingTeacher.setStatus(Status.INACTIVE);
         teacherRepository.save(existingTeacher);

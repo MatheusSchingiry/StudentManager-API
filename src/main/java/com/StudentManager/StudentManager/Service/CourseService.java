@@ -2,6 +2,8 @@ package com.StudentManager.StudentManager.Service;
 
 import com.StudentManager.StudentManager.DTO.Request.CourseRequest;
 import com.StudentManager.StudentManager.DTO.Response.CourseBaseResponse;
+import com.StudentManager.StudentManager.Exception.ConflictException;
+import com.StudentManager.StudentManager.Exception.NotFoundException;
 import com.StudentManager.StudentManager.Mapper.CourseMapper;
 import com.StudentManager.StudentManager.Model.Course;
 import com.StudentManager.StudentManager.Model.Enum.Status;
@@ -43,7 +45,7 @@ public class CourseService {
 
     @Transactional
     public CourseBaseResponse getCourseById(UUID id) {
-        return courseMapper.toCourseBaseResponse(courseRepository.findById(id).orElseThrow(() -> new RuntimeException("Course not found")));
+        return courseMapper.toCourseBaseResponse(courseRepository.findById(id).orElseThrow(() -> new NotFoundException("Course not found")));
     }
 
     @Transactional
@@ -52,7 +54,7 @@ public class CourseService {
 
         for(var id : course.unitId()) {
             Unit unit = unitRepository.findById(id)
-                    .orElseThrow(() -> new IllegalArgumentException("Unit not found with id: " + id));
+                    .orElseThrow(() -> new NotFoundException("Unit not found with id: " + id));
             units.add(unit);
         }
 
@@ -63,7 +65,7 @@ public class CourseService {
 
     @Transactional
     public CourseBaseResponse updateCourse(UUID id, CourseRequest courseDetails) {
-        Course course = courseRepository.findById(id).orElseThrow(() -> new RuntimeException("Course not found"));
+        Course course = courseRepository.findById(id).orElseThrow(() -> new NotFoundException("Course not found"));
 
         if(courseDetails.name() != null) { course.setName(courseDetails.name());}
         if(courseDetails.description() != null) { course.setDescription(courseDetails.description());}
@@ -74,14 +76,14 @@ public class CourseService {
 
     @Transactional
     public void deleteCourse(UUID id) {
-        Course existingCourse = courseRepository.findById(id).orElseThrow(() -> new RuntimeException("Course not found"));
+        Course existingCourse = courseRepository.findById(id).orElseThrow(() -> new NotFoundException("Course not found"));
 
         boolean hasActiveClasses = existingCourse.getCollegeClasses()
                 .stream()
                 .anyMatch(collegeClass -> collegeClass.getStatus() == Status.ACTIVE);
 
         if (hasActiveClasses) {
-            throw new RuntimeException("Cannot delete Course with active College Classes");
+            throw new ConflictException("Cannot delete Course with active College Classes");
         }
 
         existingCourse.setStatus(Status.INACTIVE);
@@ -90,10 +92,10 @@ public class CourseService {
 
     public void addSubjectToCourse(UUID courseId, UUID subjectId) {
         Course course = courseRepository.findById(courseId)
-                .orElseThrow(() -> new RuntimeException("Course not found"));
+                .orElseThrow(() -> new NotFoundException("Course not found"));
 
         Subject subject = subjectRepository.findById(subjectId)
-                .orElseThrow(() -> new RuntimeException("Subject not found"));
+                .orElseThrow(() -> new NotFoundException("Subject not found"));
 
         course.getSubjects().add(subject);
 

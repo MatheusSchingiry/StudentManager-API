@@ -2,6 +2,7 @@ package com.StudentManager.StudentManager.Service;
 
 import com.StudentManager.StudentManager.DTO.Request.RegistrationRequest;
 import com.StudentManager.StudentManager.DTO.Response.RegistrationBaseResponse;
+import com.StudentManager.StudentManager.Exception.NotFoundException;
 import com.StudentManager.StudentManager.Mapper.RegistrationMapper;
 import com.StudentManager.StudentManager.Model.CollegeClass;
 import com.StudentManager.StudentManager.Model.Enum.Status;
@@ -41,13 +42,13 @@ public class RegistrationService {
     }
 
     public RegistrationBaseResponse getRegistrationById(UUID id) {
-        return registrationMapper.toRegistrationBaseResponse(registrationRepository.findById(id).orElseThrow(() -> new RuntimeException("Registration not found")));
+        return registrationMapper.toRegistrationBaseResponse(registrationRepository.findById(id).orElseThrow(() -> new NotFoundException("Registration not found")));
     }
 
     @Transactional
     public RegistrationBaseResponse createRegistration(RegistrationRequest registration) {
-        Student student = studentRepository.findById(registration.studentId()).orElseThrow(() -> new RuntimeException("Student not found"));
-        CollegeClass collegeClass = collegeClassRepository.findById(registration.collegeClassId()).orElseThrow(() -> new RuntimeException("College class not found"));
+        Student student = studentRepository.findById(registration.studentId()).orElseThrow(() -> new NotFoundException("Student not found"));
+        CollegeClass collegeClass = collegeClassRepository.findById(registration.collegeClassId()).orElseThrow(() -> new NotFoundException("College class not found"));
 
         Registration registrationEntity = registrationMapper.toRegistration(registration, student, collegeClass);
         registrationEntity.setStatus(Status.ACTIVE);
@@ -58,7 +59,7 @@ public class RegistrationService {
 
     @Transactional
     public void deleteRegistration(UUID id) {
-        Registration existingRegistration = registrationRepository.findById(id).orElseThrow(() -> new RuntimeException("Registration not found"));
+        Registration existingRegistration = registrationRepository.findById(id).orElseThrow(() -> new NotFoundException("Registration not found"));
 
         existingRegistration.setStatus(Status.INACTIVE);
         registrationRepository.save(existingRegistration);

@@ -2,6 +2,8 @@ package com.StudentManager.StudentManager.Service;
 
 import com.StudentManager.StudentManager.DTO.Request.CollegeClassRequest;
 import com.StudentManager.StudentManager.DTO.Response.CollegeClassBaseResponse;
+import com.StudentManager.StudentManager.Exception.ConflictException;
+import com.StudentManager.StudentManager.Exception.NotFoundException;
 import com.StudentManager.StudentManager.Mapper.CollegeClassMapper;
 import com.StudentManager.StudentManager.Model.CollegeClass;
 import com.StudentManager.StudentManager.Model.Course;
@@ -40,16 +42,16 @@ public class CollegeClassService {
     }
 
     public CollegeClassBaseResponse getCollegeClassById(UUID id) {
-        return collegeClassMapper.toCollegeClassBaseResponse(collegeClassRepository.findById(id).orElseThrow(() -> new RuntimeException("CollegeClass not found")));
+        return collegeClassMapper.toCollegeClassBaseResponse(collegeClassRepository.findById(id).orElseThrow(() -> new NotFoundException("CollegeClass not found")));
     }
 
     @Transactional
     public CollegeClassBaseResponse createCollegeClass(CollegeClassRequest collegeClass) {
         Unit unit = unitRepository.findById(collegeClass.unitId())
-                .orElseThrow(() -> new RuntimeException("Unit not found"));
+                .orElseThrow(() -> new NotFoundException("Unit not found"));
 
         Course course = courserRepository.findById(collegeClass.course())
-                .orElseThrow(() -> new RuntimeException("Course not found"));
+                .orElseThrow(() -> new NotFoundException("Course not found"));
 
         CollegeClass collegeClassEntity = collegeClassMapper.toCollegeClass(collegeClass, unit, course);
         collegeClassEntity.setStatus(Status.ACTIVE);
@@ -58,14 +60,14 @@ public class CollegeClassService {
 
     @Transactional
     public void deleteCollegeClass(UUID id) {
-        CollegeClass existingCollegeClass = collegeClassRepository.findById(id).orElseThrow(() -> new RuntimeException("CollegeClass not found"));
+        CollegeClass existingCollegeClass = collegeClassRepository.findById(id).orElseThrow(() -> new NotFoundException("CollegeClass not found"));
 
         boolean hasActiveRegistrations = existingCollegeClass.getRegistrations()
                 .stream()
                 .anyMatch(registration -> registration.getStatus() == Status.ACTIVE);
 
         if (hasActiveRegistrations) {
-            throw new RuntimeException("Cannot delete College Class with active registrations");
+            throw new ConflictException("Cannot delete College Class with active registrations");
         }
 
         existingCollegeClass.setStatus(Status.INACTIVE);
